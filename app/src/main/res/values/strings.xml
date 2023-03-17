@@ -8,4 +8,13 @@
     <string name="tune_service">Написать в поддержку</string>
     <string name="tune_terms_of_use">Пользовательское соглашение</string>
     <string name="button_back">Назад</string>
+    <string name="input_hint">Поиск</string>
+    <string name="clear_desc">Очистить ввод</string>
+
+    <string name="share_url">https://practicum.yandex.ru/android-developer/</string>
+    <string name="terms_of_use_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="mailto">mailto:</string>
+    <string name="service_email">beskrovnaia.elena@yandex.ru</string>
+    <string name="service_email_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="service_email_body">Спасибо разработчикам и разработчицам за какое-то приложение!</string>
 </resources>

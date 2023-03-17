@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="VerticalMainLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="HorizontalItemLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="HeaderTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">start</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/primary_text_size</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="HeaderItemMenuTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginStart">8dp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">@dimen/primary_text_size</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="MainMenuButtonStyle" parent="Widget.MaterialComponents.Button.UnelevatedButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:insetTop">@dimen/button_inset_top</item>
+        <item name="android:insetBottom">@dimen/button_inset_bottom</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/primary_text_size</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="cornerRadius">@dimen/corner_radius</item>
+        <item name="iconGravity">textStart</item>
+        <item name="iconPadding">@dimen/icon_padding</item>
+        <item name="iconTint">@color/black</item>
+    </style>
+
+    <style name="ItemMenuButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/settings_button_height</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="android:textAlignment">viewStart</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/regular_text_size</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="rippleColor">?attr/colorPrimary</item>
+        <item name="iconGravity">end</item>
+        <item name="iconPadding">@dimen/icon_padding</item>
+        <item name="iconTint">?attr/colorPrimaryDark</item>
+    </style>
+
+    <style name="BackImageButtonStyle" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">56dp</item>
+        <item name="android:layout_height">56dp</item>
+        <item name="android:backgroundTint">?attr/colorPrimary</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+        <item name="android:src">@drawable/ic_arrow_back</item>
+    </style>
+
+    <style name="ClearEditImageViewStyle">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center|end</item>
+        <item name="android:layout_marginStart">@dimen/layout_padding</item>
+        <item name="android:layout_marginEnd">@dimen/padding_end</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="ItemMenuSwitchButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/settings_button_height</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:paddingStart">@dimen/layout_padding</item>
+        <item name="android:paddingEnd">@dimen/padding_end</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/regular_text_size</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
+        <item name="thumbTint">@color/switch_thumb_selector</item>
+        <item name="trackTint">@color/switch_track_selector</item>
+    </style>
+
+    <style name="SearchEditTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/bg_edittext</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColorHint">@color/grey_200</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">@dimen/regular_text_size</item>
+        <item name="android:drawablePadding">@dimen/drawable_padding</item>
+    </style>
+</resources>
