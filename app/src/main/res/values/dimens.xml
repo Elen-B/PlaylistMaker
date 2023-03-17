@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="primary_text_size">22sp</dimen>
+    <dimen name="regular_text_size">16sp</dimen>
+    <dimen name="button_inset_top">8dp</dimen>
+    <dimen name="button_inset_bottom">8dp</dimen>
+    <dimen name="settings_button_height">60dp</dimen>
+    <dimen name="layout_padding">16dp</dimen>
+    <dimen name="corner_radius">16dp</dimen>
+    <dimen name="icon_padding">10dp</dimen>
+    <dimen name="switch_width">40dp</dimen>
+    <dimen name="zero_value">0dp</dimen>
+</resources>
