@@ -1,78 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/blue"
+    style="@style/VerticalMainLayoutStyle"
+    android:background="?attr/colorSecondary"
     android:padding="@dimen/layout_padding">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start"
-        android:fontFamily="@font/ys_display_medium"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="@dimen/primary_text_size" />
+        style="@style/HeaderTextStyle"
+        android:text="@string/app_name"/>
 
     <Button
         android:id="@+id/btSearch"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
+        style="@style/MainMenuButtonStyle"
         android:layout_marginTop="32dp"
-        android:layout_weight="1"
-        android:backgroundTint="@color/white"
-        android:fontFamily="@font/ys_display_medium"
-        android:insetTop="@dimen/button_inset_top"
-        android:insetBottom="@dimen/button_inset_bottom"
         android:text="@string/button_search"
-        android:textAllCaps="false"
-        android:textColor="@color/black_100"
-        android:textSize="@dimen/primary_text_size"
-        android:foreground="?attr/selectableItemBackground"
-        app:cornerRadius="@dimen/corner_radius"
-        app:icon="@drawable/ic_search"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding"
-        app:iconTint="@color/black_100" />
+        app:icon="@drawable/ic_search" />
 
     <Button
         android:id="@+id/btMedia"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:backgroundTint="@color/white"
-        android:fontFamily="@font/ys_display_medium"
-        android:insetTop="@dimen/button_inset_top"
-        android:insetBottom="@dimen/button_inset_bottom"
+        style="@style/MainMenuButtonStyle"
         android:text="@string/button_media"
-        android:textAllCaps="false"
-        android:textColor="@color/black_100"
-        android:textSize="@dimen/primary_text_size"
-        android:foreground="?attr/selectableItemBackground"
-        app:cornerRadius="@dimen/corner_radius"
-        app:icon="@drawable/ic_media"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding"
-        app:iconTint="@color/black_100" />
+        app:icon="@drawable/ic_media" />
 
     <Button
         android:id="@+id/btTune"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:backgroundTint="@color/white"
-        android:fontFamily="@font/ys_display_medium"
-        android:insetTop="@dimen/button_inset_top"
-        android:insetBottom="@dimen/button_inset_bottom"
+        style="@style/MainMenuButtonStyle"
         android:text="@string/button_tune"
-        android:textAllCaps="false"
-        android:textColor="@color/black_100"
-        android:textSize="@dimen/primary_text_size"
-        android:foreground="?attr/selectableItemBackground"
-        app:cornerRadius="@dimen/corner_radius"
-        app:icon="@drawable/ic_tune"
-        app:iconGravity="textStart"
-        app:iconPadding="@dimen/icon_padding"
-        app:iconTint="@color/black_100" />
+        app:icon="@drawable/ic_tune" />
 </LinearLayout>
