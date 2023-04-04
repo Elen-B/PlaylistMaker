@@ -6,11 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
+import androidx.core.view.isVisible
 
 class SearchActivity : AppCompatActivity() {
     private val edSearch: EditText by lazy { findViewById(R.id.edSearch) }
@@ -44,7 +44,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                btClearSearch.visibility = btClearSearchVisibility(s)
+                btClearSearch.isVisible = !s.isNullOrEmpty()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -53,14 +53,6 @@ class SearchActivity : AppCompatActivity() {
         }
 
         edSearch.addTextChangedListener(searchTextWatcher)
-    }
-
-    private fun btClearSearchVisibility(s: CharSequence?): Int {
-        return if (s.isNullOrEmpty()) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
