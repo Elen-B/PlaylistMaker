@@ -38,4 +38,11 @@
             android:src="@drawable/ic_clear"
             android:visibility="gone"/>
     </FrameLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/trackList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/track_view"
+        android:scrollbars="vertical"/>
 </LinearLayout>

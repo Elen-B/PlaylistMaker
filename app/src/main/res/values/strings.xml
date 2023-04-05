@@ -10,6 +10,8 @@
     <string name="button_back">Назад</string>
     <string name="input_hint">Поиск</string>
     <string name="clear_desc">Очистить ввод</string>
+    <string name="track_name">Без названия</string>
+    <string name="track_info">"%1$s \u00B7 %2$s"</string>
 
     <string name="share_url">https://practicum.yandex.ru/android-developer/</string>
     <string name="terms_of_use_url">https://yandex.ru/legal/practicum_offer/</string>
