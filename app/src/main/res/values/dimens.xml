@@ -2,14 +2,21 @@
 <resources>
     <dimen name="primary_text_size">22sp</dimen>
     <dimen name="regular_text_size">16sp</dimen>
+    <dimen name="small_text_size">12sp</dimen>
     <dimen name="button_inset_top">8dp</dimen>
     <dimen name="button_inset_bottom">8dp</dimen>
     <dimen name="settings_button_height">60dp</dimen>
+    <dimen name="small_layout_padding">8dp</dimen>
     <dimen name="layout_padding">16dp</dimen>
     <dimen name="drawable_padding">8dp</dimen>
     <dimen name="padding_end">12dp</dimen>
     <dimen name="corner_radius">16dp</dimen>
     <dimen name="icon_padding">10dp</dimen>
     <dimen name="switch_width">40dp</dimen>
+    <dimen name="track_image_size">44dp</dimen>
     <dimen name="zero_value">0dp</dimen>
+    <dimen name="track_item_height">60dp</dimen>
+    <dimen name="small_margin">4dp</dimen>
+    <dimen name="medium_margin">16dp</dimen>
+    <dimen name="large_margin">24dp</dimen>
 </resources>

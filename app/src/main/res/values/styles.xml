@@ -12,6 +12,19 @@
         <item name="android:orientation">horizontal</item>
     </style>
 
+    <style name="TrackItemLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/track_item_height</item>
+        <item name="android:padding">@dimen/small_layout_padding</item>
+    </style>
+
+    <style name="TrackInfoHLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
     <style name="HeaderTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -107,5 +120,43 @@
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">@dimen/regular_text_size</item>
         <item name="android:drawablePadding">@dimen/drawable_padding</item>
+    </style>
+
+    <style name="TrackImageViewStyle">
+        <item name="android:layout_width">@dimen/track_image_size</item>
+        <item name="android:layout_height">@dimen/track_image_size</item>
+        <item name="android:layout_alignParentStart">true</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_marginStart">@dimen/small_margin</item>
+        <item name="android:layout_marginEnd">@dimen/drawable_padding</item>
+    </style>
+
+    <style name="TrackTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+    </style>
+
+    <style name="TrackNameTextStyle" parent="TrackTextStyle">
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+        <item name="android:textSize">@dimen/regular_text_size</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+
+    <style name="TrackInfoTextStyle" parent="TrackTextStyle">
+        <item name="android:textSize">@dimen/small_text_size</item>
+        <item name="android:textColor">?attr/colorPrimaryDark</item>
+    </style>
+
+    <style name="TrackArrowImageViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginStart">@dimen/medium_margin</item>
+        <item name="android:layout_marginEnd">@dimen/medium_margin</item>
+        <item name="android:layout_alignParentEnd">true</item>
+        <item name="android:layout_centerVertical">true</item>
     </style>
 </resources>
