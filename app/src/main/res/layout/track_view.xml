@@ -16,7 +16,7 @@
         style="@style/TrackNameTextStyle"
         android:layout_toEndOf = "@+id/trackImage"
         android:layout_toStartOf = "@+id/trackArrow"
-        android:text="@string/track_name"/>
+        tools:text="Без названия"/>
 
     <TextView
         android:id="@+id/trackInfo"

@@ -16,7 +16,7 @@
     <dimen name="track_image_size">44dp</dimen>
     <dimen name="zero_value">0dp</dimen>
     <dimen name="track_item_height">60dp</dimen>
-    <dimen name="small_margin">4sp</dimen>
-    <dimen name="medium_margin">16sp</dimen>
+    <dimen name="small_margin">4dp</dimen>
+    <dimen name="medium_margin">16dp</dimen>
     <dimen name="large_margin">24dp</dimen>
 </resources>
