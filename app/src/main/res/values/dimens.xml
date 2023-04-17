@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="primary_text_size">22sp</dimen>
+    <dimen name="sub_primary_text_size">20sp</dimen>
     <dimen name="regular_text_size">16sp</dimen>
     <dimen name="small_text_size">12sp</dimen>
     <dimen name="button_inset_top">8dp</dimen>
@@ -9,6 +10,8 @@
     <dimen name="small_layout_padding">8dp</dimen>
     <dimen name="layout_padding">16dp</dimen>
     <dimen name="drawable_padding">8dp</dimen>
+    <dimen name="drawable_padding_20">20dp</dimen>
+    <dimen name="drawable_padding_24">24dp</dimen>
     <dimen name="padding_end">12dp</dimen>
     <dimen name="corner_radius">16dp</dimen>
     <dimen name="icon_padding">10dp</dimen>
