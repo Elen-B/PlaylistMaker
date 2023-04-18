@@ -5,8 +5,10 @@ import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -26,9 +28,11 @@ class SearchActivity : AppCompatActivity() {
     private val btSearchBack: ImageButton by lazy {findViewById(R.id.btSearchBack)}
     private val btClearSearch: ImageView by lazy {findViewById(R.id.btClearSearch)}
     private val recyclerSearch: RecyclerView by lazy { findViewById(R.id.trackList)}
+    private val trackEmpty: View by lazy { findViewById(R.id.trackEmpty)}
+    private val trackError: View by lazy { findViewById(R.id.trackError)}
     private var searchText: String? = ""
 
-    private val items: MutableList<Any> = mutableListOf()
+    private val items = ArrayList<Track>()
     val trackAdapter = TrackAdapter(items)
 
     @SuppressLint("ServiceCast")
@@ -45,8 +49,8 @@ class SearchActivity : AppCompatActivity() {
             //скрыть клавиатуру п.4 д/з тема 3/5
             val imm = edSearch.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(edSearch.windowToken, 0)
-            trackAdapter.items = mutableListOf()
-            trackAdapter.notifyDataSetChanged()
+            trackAdapter.deleteItems()
+            showSearchResultView(SearchResultView.LIST)
         }
 
         val searchTextWatcher = object: TextWatcher {
@@ -71,6 +75,10 @@ class SearchActivity : AppCompatActivity() {
             false
         }
 
+        trackError.findViewById<Button>(R.id.btRetry).setOnClickListener {
+            searchTrack(edSearch.text.toString())
+        }
+
         recyclerSearch.layoutManager = LinearLayoutManager(this)
         recyclerSearch.adapter = trackAdapter
     }
@@ -87,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
         edSearch.setSelection(edSearch.text.length)
     }
 
-    fun searchTrack(searchText: String) {
+    private fun searchTrack(searchText: String) {
         iTunesAPIService.search(searchText)
             .enqueue(object: Callback<TrackSearchResponse> {
                 override fun onResponse(
@@ -96,26 +104,31 @@ class SearchActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful) {
                         if (response.body()?.results?.isNotEmpty() == true) {
-                            trackAdapter.items.clear()
-                            trackAdapter.items.addAll(response.body()?.results!!)
-                            trackAdapter.notifyDataSetChanged()
+                            trackAdapter.addItems(response.body()?.results!!)
+                            showSearchResultView(SearchResultView.LIST)
                         }
                         else {
-                            trackAdapter.items = mutableListOf(PHTrackEmpty())
-                            trackAdapter.notifyDataSetChanged()
+                            trackAdapter.deleteItems()
+                            showSearchResultView(SearchResultView.EMPTY)
                         }
                     }
                     else {
-                        trackAdapter.items = mutableListOf(PHTrackError())
-                        trackAdapter.notifyDataSetChanged()
+                        trackAdapter.deleteItems()
+                        showSearchResultView(SearchResultView.ERROR)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-                    trackAdapter.items = mutableListOf(PHTrackError())
-                    trackAdapter.notifyDataSetChanged()
+                    trackAdapter.deleteItems()
+                    showSearchResultView(SearchResultView.ERROR)
                 }
             })
+    }
+
+    private fun showSearchResultView(viewType: SearchResultView) {
+        recyclerSearch.isVisible = viewType == SearchResultView.LIST
+        trackEmpty.isVisible = viewType == SearchResultView.EMPTY
+        trackError.isVisible = viewType == SearchResultView.ERROR
     }
 
     companion object {

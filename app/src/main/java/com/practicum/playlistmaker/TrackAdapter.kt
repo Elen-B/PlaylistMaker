@@ -3,44 +3,29 @@ package com.practicum.playlistmaker
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter(var items: MutableList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    override fun getItemViewType(position: Int): Int {
-        return when (val item = items[position]) {
-            is Track -> VIEW_TYPE_TRACK
-            is PHTrackEmpty -> VIEW_TYPE_EMPTY
-            is PHTrackError -> VIEW_TYPE_ERROR
-            else -> throw java.lang.IllegalStateException("Cannot find viewType for item $item")
-        }
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when (viewType) {
-            VIEW_TYPE_TRACK -> TrackViewHolder(parent)
-            VIEW_TYPE_EMPTY -> PHTrackEmptyViewHolder(parent)
-            VIEW_TYPE_ERROR -> PHTrackErrorViewHolder(parent)
-            else -> throw java.lang.IllegalStateException("Cannot create ViewHolder for viewType $viewType")
-        }
-
+class TrackAdapter(private var items: ArrayList<Track>) : RecyclerView.Adapter<TrackViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
+        return TrackViewHolder(parent)
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = items[position]) {
-            is Track -> {
-                val trackViewHolder: TrackViewHolder = holder as TrackViewHolder
-                trackViewHolder.bind(item)
-            }
-            is PHTrackEmpty, is PHTrackError -> Unit
-            else -> throw java.lang.IllegalStateException("Cannot find viewType for item $item")
-        }
+    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
+        holder.bind(items[position])
     }
 
-    companion object {
-        const val VIEW_TYPE_TRACK = 1
-        const val VIEW_TYPE_EMPTY = 2
-        const val VIEW_TYPE_ERROR = 3
+    fun addItems(values: ArrayList<Track>) {
+        this.items.clear()
+        if (values.size > 0) {
+            this.items.addAll(values)
+        }
+        this.notifyDataSetChanged()
+    }
+
+    fun deleteItems() {
+        this.items.clear()
+        this.notifyDataSetChanged()
     }
 }

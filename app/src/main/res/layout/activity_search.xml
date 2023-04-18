@@ -45,6 +45,21 @@
         android:id="@+id/trackList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/ph_track_empty_view"
-        android:scrollbars="vertical"/>
+        tools:listitem="@layout/track_view"
+        android:scrollbars="vertical"
+        android:visibility="visible"/>
+
+    <include
+        layout="@layout/ph_track_empty_view"
+        android:id="@+id/trackEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <include
+        layout="@layout/ph_track_error_view"
+        android:id="@+id/trackError"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 </LinearLayout>
