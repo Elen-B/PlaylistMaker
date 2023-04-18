@@ -9,6 +9,4 @@ class PHTrackEmpty
 class PHTrackEmptyViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
         .inflate(R.layout.ph_track_empty_view, parentView, false)
-) {
-
-}
+)

@@ -20,7 +20,7 @@ import retrofit2.Response
 
 
 class SearchActivity : AppCompatActivity() {
-    private val iTunesAPIService = ITunesAPI.create()
+    private val iTunesAPIService = ITunesApi.create()
 
     val edSearch: EditText by lazy { findViewById(R.id.edSearch) }
     private val btSearchBack: ImageButton by lazy {findViewById(R.id.btSearchBack)}

@@ -6,7 +6,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface ITunesAPI {
+interface ITunesApi {
 
     @GET("/search?entity=song")
     fun search(@Query("term") text: String) : Call<TrackSearchResponse>
@@ -14,12 +14,12 @@ interface ITunesAPI {
     companion object Factory {
         private const val translateBaseUrl = "http://itunes.apple.com" // "https://itunes.apple.com" не работает сейчас
 
-        fun create(): ITunesAPI {
+        fun create(): ITunesApi {
             val retrofit = Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .baseUrl(translateBaseUrl)
                 .build()
-            return retrofit.create(ITunesAPI::class.java)
+            return retrofit.create(ITunesApi::class.java)
         }
     }
 }

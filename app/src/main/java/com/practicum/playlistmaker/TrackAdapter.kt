@@ -3,11 +3,10 @@ package com.practicum.playlistmaker
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter(var items: MutableList<Any>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class TrackAdapter(var items: MutableList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun getItemViewType(position: Int): Int {
-        val item = items[position]
-        return when (item) {
-            is Track        -> VIEW_TYPE_TRACK
+        return when (val item = items[position]) {
+            is Track -> VIEW_TYPE_TRACK
             is PHTrackEmpty -> VIEW_TYPE_EMPTY
             is PHTrackError -> VIEW_TYPE_ERROR
             else -> throw java.lang.IllegalStateException("Cannot find viewType for item $item")
@@ -29,16 +28,12 @@ class TrackAdapter(var items: MutableList<Any>): RecyclerView.Adapter<RecyclerVi
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val item = items[position]
-        when (item) {
+        when (val item = items[position]) {
             is Track -> {
                 val trackViewHolder: TrackViewHolder = holder as TrackViewHolder
                 trackViewHolder.bind(item)
             }
-            is PHTrackEmpty -> {
-            }
-           is PHTrackError -> {
-           }
+            is PHTrackEmpty, is PHTrackError -> Unit
             else -> throw java.lang.IllegalStateException("Cannot find viewType for item $item")
         }
     }
