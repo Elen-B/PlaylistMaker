@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.*
 
-data class Track(val trackName: String, val artistName: String, @SerializedName("trackTimeMillis") val trackTime: Long, val artworkUrl100: String)
+data class Track(val trackId: Long, val trackName: String, val artistName: String, @SerializedName("trackTimeMillis") val trackTime: Long, val artworkUrl100: String)
 
 class TrackViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
