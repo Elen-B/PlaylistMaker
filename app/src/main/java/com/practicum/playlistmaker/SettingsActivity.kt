@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 
 class SettingsActivity : AppCompatActivity() {
@@ -21,16 +20,15 @@ class SettingsActivity : AppCompatActivity() {
         val btService = findViewById<Button>(R.id.btService)
         val btTermsOfUse = findViewById<Button>(R.id.btTermsOfUse)
 
+        scNightTheme.isChecked = (applicationContext as App).darkTheme
+
         btSettingsBack.setOnClickListener {
             finish()
         }
 
-        scNightTheme.setOnClickListener {
-            var modeValue = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-            if (scNightTheme.isChecked) {
-                modeValue = AppCompatDelegate.MODE_NIGHT_YES
-            }
-            AppCompatDelegate.setDefaultNightMode(modeValue)
+        scNightTheme.setOnCheckedChangeListener { _, isChecked ->
+            (applicationContext as App).setAppDarkTheme(isChecked)
+            (applicationContext as App).saveAppPreferences(App.DARK_THEME_KEY, isChecked)
         }
 
         btShareApp.setOnClickListener {

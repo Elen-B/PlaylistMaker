@@ -28,12 +28,25 @@ class SearchActivity : AppCompatActivity() {
     private val btSearchBack: ImageButton by lazy {findViewById(R.id.btSearchBack)}
     private val btClearSearch: ImageView by lazy {findViewById(R.id.btClearSearch)}
     private val recyclerSearch: RecyclerView by lazy { findViewById(R.id.trackList)}
-    private val trackEmpty: View by lazy { findViewById(R.id.trackEmpty)}
-    private val trackError: View by lazy { findViewById(R.id.trackError)}
+    private val trackEmptyView: View by lazy { findViewById(R.id.trackEmpty)}
+    private val trackErrorView: View by lazy { findViewById(R.id.trackError)}
+    private val searchHistoryView: View by lazy { findViewById(R.id.searchHistory)}
+    private val recyclerHistory: RecyclerView by lazy { searchHistoryView.findViewById(R.id.SearchList)}
+    private val searchHistory: SearchHistory by lazy { SearchHistory((applicationContext as App).appPreferences)}
     private var searchText: String? = ""
 
+    private val historyAdapter = TrackAdapter(ArrayList()).apply {
+        clickListener = TrackAdapter.TrackClickListener {
+        }
+    }
+
     private val items = ArrayList<Track>()
-    val trackAdapter = TrackAdapter(items)
+    val trackAdapter = TrackAdapter(items).apply {
+        clickListener = TrackAdapter.TrackClickListener {
+            searchHistory.addTrack(it)
+            historyAdapter.addItems(searchHistory.trackHistoryList)
+        }
+    }
 
     @SuppressLint("ServiceCast")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,11 +59,8 @@ class SearchActivity : AppCompatActivity() {
 
         btClearSearch.setOnClickListener {
             edSearch.setText("")
-            //скрыть клавиатуру п.4 д/з тема 3/5
             val imm = edSearch.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(edSearch.windowToken, 0)
-            trackAdapter.deleteItems()
-            showSearchResultView(SearchResultView.LIST)
         }
 
         val searchTextWatcher = object: TextWatcher {
@@ -60,6 +70,12 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 btClearSearch.isVisible = !s.isNullOrEmpty()
+                if (edSearch.hasFocus() && s?.isEmpty() == true && searchHistory.trackHistoryList.size > 0) {
+                    showSearchResultView(SearchResultView.HISTORY)
+                }
+                else {
+                    showSearchResultView(SearchResultView.LIST)
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -74,13 +90,33 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+        edSearch.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && edSearch.text.isEmpty() && searchHistory.trackHistoryList.size > 0) {
+                showSearchResultView(SearchResultView.HISTORY)
+            }
+            else {
+                showSearchResultView(SearchResultView.LIST)
+            }
+        }
 
-        trackError.findViewById<Button>(R.id.btRetry).setOnClickListener {
+        trackErrorView.findViewById<Button>(R.id.btRetry).setOnClickListener {
             searchTrack(edSearch.text.toString())
+        }
+
+        searchHistoryView.findViewById<Button>(R.id.btClearSearchHistory).setOnClickListener {
+            searchHistory.clearSearchHistory()
+            historyAdapter.deleteItems()
+            showSearchResultView(SearchResultView.LIST)
         }
 
         recyclerSearch.layoutManager = LinearLayoutManager(this)
         recyclerSearch.adapter = trackAdapter
+
+        historyAdapter.addItems(searchHistory.trackHistoryList)
+        val mLayoutManager = LinearLayoutManager(this)
+        mLayoutManager.reverseLayout = true
+        recyclerHistory.layoutManager = mLayoutManager
+        recyclerHistory.adapter = historyAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -104,31 +140,32 @@ class SearchActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful) {
                         if (response.body()?.results?.isNotEmpty() == true) {
-                            trackAdapter.addItems(response.body()?.results!!)
                             showSearchResultView(SearchResultView.LIST)
+                            trackAdapter.addItems(response.body()?.results!!)
                         }
                         else {
-                            trackAdapter.deleteItems()
                             showSearchResultView(SearchResultView.EMPTY)
                         }
                     }
                     else {
-                        trackAdapter.deleteItems()
                         showSearchResultView(SearchResultView.ERROR)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
-                    trackAdapter.deleteItems()
                     showSearchResultView(SearchResultView.ERROR)
                 }
             })
     }
 
     private fun showSearchResultView(viewType: SearchResultView) {
+        if (viewType == SearchResultView.LIST) {
+            trackAdapter.deleteItems()
+        }
         recyclerSearch.isVisible = viewType == SearchResultView.LIST
-        trackEmpty.isVisible = viewType == SearchResultView.EMPTY
-        trackError.isVisible = viewType == SearchResultView.ERROR
+        trackEmptyView.isVisible = viewType == SearchResultView.EMPTY
+        trackErrorView.isVisible = viewType == SearchResultView.ERROR
+        searchHistoryView.isVisible = viewType == SearchResultView.HISTORY
     }
 
     companion object {
