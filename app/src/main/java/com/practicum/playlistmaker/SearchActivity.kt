@@ -35,10 +35,16 @@ class SearchActivity : AppCompatActivity() {
     private val searchHistory: SearchHistory by lazy { SearchHistory((applicationContext as App).appPreferences)}
     private var searchText: String? = ""
 
+    private val historyAdapter = TrackAdapter(ArrayList()).apply {
+        clickListener = TrackAdapter.TrackClickListener {
+        }
+    }
+
     private val items = ArrayList<Track>()
     val trackAdapter = TrackAdapter(items).apply {
         clickListener = TrackAdapter.TrackClickListener {
             searchHistory.addTrack(it)
+            historyAdapter.addItems(searchHistory.trackHistoryList)
         }
     }
 
@@ -64,7 +70,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 btClearSearch.isVisible = !s.isNullOrEmpty()
-                if (edSearch.hasFocus() && s?.isEmpty() == true && searchHistory.searchHistoryAdapter.itemCount > 0) {
+                if (edSearch.hasFocus() && s?.isEmpty() == true && searchHistory.trackHistoryList.size > 0) {
                     showSearchResultView(SearchResultView.HISTORY)
                 }
                 else {
@@ -85,7 +91,7 @@ class SearchActivity : AppCompatActivity() {
             false
         }
         edSearch.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && edSearch.text.isEmpty() && searchHistory.searchHistoryAdapter.itemCount > 0) {
+            if (hasFocus && edSearch.text.isEmpty() && searchHistory.trackHistoryList.size > 0) {
                 showSearchResultView(SearchResultView.HISTORY)
             }
             else {
@@ -99,16 +105,18 @@ class SearchActivity : AppCompatActivity() {
 
         searchHistoryView.findViewById<Button>(R.id.btClearSearchHistory).setOnClickListener {
             searchHistory.clearSearchHistory()
+            historyAdapter.deleteItems()
             showSearchResultView(SearchResultView.LIST)
         }
 
         recyclerSearch.layoutManager = LinearLayoutManager(this)
         recyclerSearch.adapter = trackAdapter
 
+        historyAdapter.addItems(searchHistory.trackHistoryList)
         val mLayoutManager = LinearLayoutManager(this)
         mLayoutManager.reverseLayout = true
         recyclerHistory.layoutManager = mLayoutManager
-        recyclerHistory.adapter = searchHistory.searchHistoryAdapter
+        recyclerHistory.adapter = historyAdapter
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

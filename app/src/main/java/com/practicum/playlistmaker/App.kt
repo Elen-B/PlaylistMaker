@@ -7,13 +7,14 @@ import androidx.appcompat.app.AppCompatDelegate
 const val APP_PREFERENCES = "app_preferences"
 
 class App : Application() {
-    lateinit var appPreferences: SharedPreferences
+    val appPreferences: SharedPreferences by lazy {
+        getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
+    }
     var darkTheme = false
     
     override fun onCreate() {
         super.onCreate()
 
-        appPreferences = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE)
         darkTheme = appPreferences.getBoolean(DARK_THEME_KEY, false)
         setAppDarkTheme(darkTheme)
     }
