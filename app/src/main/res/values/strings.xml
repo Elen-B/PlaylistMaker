@@ -16,6 +16,15 @@
     <string name="button_retry">Обновить</string>
     <string name="button_search_history_clear">Очистить историю</string>
     <string name="search_history_header">Вы искали</string>
+    <string name="player_genre_caption">Жанр</string>
+    <string name="player_country_caption">Страна</string>
+    <string name="player_year_caption">Год</string>
+    <string name="player_album_caption">Альбом</string>
+    <string name="player_track_time_caption">Длительность</string>
+    <string name="player_time_progress_default">0:00</string>
+    <string name="player_description_play">воспроизвести</string>
+    <string name="player_description_add">в playlist</string>
+    <string name="player_description_like">нравится</string>
 
     <string name="share_url">https://practicum.yandex.ru/android-developer/</string>
     <string name="terms_of_use_url">https://yandex.ru/legal/practicum_offer/</string>

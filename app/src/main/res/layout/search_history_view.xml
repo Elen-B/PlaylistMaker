@@ -9,26 +9,23 @@
         style="@style/HeaderSearchHistoryStyle"
         android:text="@string/search_history_header"/>
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        style="@style/VerticalMainLayoutStyle"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            style="@style/VerticalMainLayoutStyle">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/SearchList"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:visibility="visible"
+            tools:itemCount="4"
+            tools:listitem="@layout/track_view" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/SearchList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scrollbars="vertical"
-                android:visibility="visible"
-                tools:itemCount="4"
-                tools:listitem="@layout/track_view" />
-
-            <Button
-                android:id="@+id/btClearSearchHistory"
-                style="@style/ClearHistoryButtonStyle"
-                android:text="@string/button_search_history_clear"/>
-        </LinearLayout>
-    </ScrollView>
+        <Button
+            android:id="@+id/btClearSearchHistory"
+            style="@style/ClearHistoryButtonStyle"
+            android:text="@string/button_search_history_clear"/>
+    </LinearLayout>
 </LinearLayout>

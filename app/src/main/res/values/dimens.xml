@@ -3,6 +3,7 @@
     <dimen name="primary_text_size">22sp</dimen>
     <dimen name="sub_primary_text_size">20sp</dimen>
     <dimen name="regular_text_size">16sp</dimen>
+    <dimen name="sub_regular_text_size">14sp</dimen>
     <dimen name="small_text_size">12sp</dimen>
     <dimen name="button_inset_top">8dp</dimen>
     <dimen name="button_inset_bottom">8dp</dimen>
@@ -22,6 +23,8 @@
     <dimen name="track_item_height">60dp</dimen>
     <dimen name="small_margin">4dp</dimen>
     <dimen name="small_medium_margin">8dp</dimen>
+    <dimen name="half_large_margin">12dp</dimen>
     <dimen name="medium_margin">16dp</dimen>
     <dimen name="large_margin">24dp</dimen>
+    <dimen name="xlarge_margin">36dp</dimen>
 </resources>
