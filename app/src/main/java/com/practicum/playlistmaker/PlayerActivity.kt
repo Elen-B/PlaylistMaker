@@ -22,6 +22,7 @@ class PlayerActivity : AppCompatActivity() {
     private val playerGenreInfo: TextView by lazy {findViewById(R.id.playerGenreInfo)}
     private val playerCountryInfo: TextView by lazy {findViewById(R.id.playerCountryInfo)}
     private val playerImageView: ImageView by lazy { findViewById(R.id.playerImageView) }
+    private val playerAlbumGroup: Group by lazy { findViewById(R.id.playerAlbumGroup) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,20 +40,20 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun getCurrentTrack(): Track? {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra("Track", Track::class.java)
+            intent.getParcelableExtra(TRACK, Track::class.java)
         } else {
-            intent.getParcelableExtra("Track")
+            intent.getParcelableExtra(TRACK)
         }
     }
 
     private fun init() {
-        playerTrackName.text = track?.trackName ?: ""
-        playerArtistName.text = track?.artistName ?: ""
+        playerTrackName.text = track?.trackName.orEmpty()
+        playerArtistName.text = track?.artistName.orEmpty()
         playerTrackTimeInfo.text = track?.getTrackTime()
-        playerAlbumInfo.text = track?.albumName ?: ""
-        playerCountryInfo.text = track?.country ?: ""
-        playerTrackYearInfo.text = track?.geReleaseYear() ?: ""
-        playerGenreInfo.text = track?.genreName ?: ""
+        playerAlbumInfo.text = track?.albumName.orEmpty()
+        playerCountryInfo.text = track?.country.orEmpty()
+        playerTrackYearInfo.text = track?.getReleaseYear().orEmpty()
+        playerGenreInfo.text = track?.genreName.orEmpty()
         Glide.with(this)
             .load(track?.getCoverArtwork())
             .placeholder(R.drawable.ic_track)
@@ -62,6 +63,10 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setVisibility() {
-        findViewById<Group>(R.id.playerAlbumGroup).isVisible = !playerAlbumInfo.text.isNullOrEmpty()
+        playerAlbumGroup.isVisible = !playerAlbumInfo.text.isNullOrEmpty()
+    }
+
+    companion object {
+        const val TRACK = "Track"
     }
 }
