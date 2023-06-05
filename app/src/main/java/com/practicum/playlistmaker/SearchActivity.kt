@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -35,6 +37,9 @@ class SearchActivity : AppCompatActivity() {
     private val recyclerHistory: RecyclerView by lazy { searchHistoryView.findViewById(R.id.SearchList)}
     private val searchHistory: SearchHistory by lazy { SearchHistory((applicationContext as App).appPreferences)}
     private var searchText: String? = ""
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { searchTrack(edSearch.text.toString()) }
 
     private val historyAdapter = TrackAdapter(ArrayList()).apply {
         clickListener = TrackAdapter.TrackClickListener {
@@ -77,6 +82,7 @@ class SearchActivity : AppCompatActivity() {
                     showSearchResultView(SearchResultView.HISTORY)
                 }
                 else {
+                    searchDebounce()
                     showSearchResultView(SearchResultView.LIST)
                 }
             }
@@ -177,7 +183,13 @@ class SearchActivity : AppCompatActivity() {
         startActivity(playerIntent)
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
