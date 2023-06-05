@@ -40,10 +40,13 @@ class SearchActivity : AppCompatActivity() {
 
     private val handler = Handler(Looper.getMainLooper())
     private val searchRunnable = Runnable { searchTrack(edSearch.text.toString()) }
+    private var isClickAllowed = true
 
     private val historyAdapter = TrackAdapter(ArrayList()).apply {
         clickListener = TrackAdapter.TrackClickListener {
-            showPlayerActivity(it)
+            if (clickDebounce()) {
+                showPlayerActivity(it)
+            }
         }
     }
 
@@ -52,7 +55,9 @@ class SearchActivity : AppCompatActivity() {
         clickListener = TrackAdapter.TrackClickListener {
             searchHistory.addTrack(it)
             historyAdapter.addItems(searchHistory.trackHistoryList)
-            showPlayerActivity(it)
+            if (clickDebounce()) {
+                showPlayerActivity(it)
+            }
         }
     }
 
@@ -188,8 +193,18 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
