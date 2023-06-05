@@ -2,6 +2,7 @@ package com.practicum.playlistmaker
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -37,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val historyAdapter = TrackAdapter(ArrayList()).apply {
         clickListener = TrackAdapter.TrackClickListener {
+            showPlayerActivity(it)
         }
     }
 
@@ -45,6 +47,7 @@ class SearchActivity : AppCompatActivity() {
         clickListener = TrackAdapter.TrackClickListener {
             searchHistory.addTrack(it)
             historyAdapter.addItems(searchHistory.trackHistoryList)
+            showPlayerActivity(it)
         }
     }
 
@@ -166,6 +169,12 @@ class SearchActivity : AppCompatActivity() {
         trackEmptyView.isVisible = viewType == SearchResultView.EMPTY
         trackErrorView.isVisible = viewType == SearchResultView.ERROR
         searchHistoryView.isVisible = viewType == SearchResultView.HISTORY
+    }
+
+    private fun showPlayerActivity(track: Track) {
+        val playerIntent = Intent(this@SearchActivity, PlayerActivity::class.java)
+        playerIntent.putExtra("Track", track)
+        startActivity(playerIntent)
     }
 
     companion object {
