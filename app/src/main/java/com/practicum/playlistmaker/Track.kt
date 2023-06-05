@@ -15,7 +15,8 @@ data class Track(
     @SerializedName("collectionName") val albumName: String?,
     val releaseDate: Date,
     @SerializedName("primaryGenreName") val genreName: String,
-    val country: String?
+    val country: String?,
+    val previewUrl: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
@@ -26,6 +27,7 @@ data class Track(
         parcel.readString(),
         Date(parcel.readLong()),
         parcel.readString()!!,
+        parcel.readString(),
         parcel.readString()
     )
 
@@ -42,6 +44,7 @@ data class Track(
         parcel.writeLong(releaseDate.time)
         parcel.writeString(genreName)
         parcel.writeString(country)
+        parcel.writeString(previewUrl)
     }
 
     override fun describeContents(): Int {

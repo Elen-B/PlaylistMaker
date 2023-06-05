@@ -40,7 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private var searchText: String? = ""
 
     private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { searchTrack(edSearch.text.toString()) }
+    private val searchRunnable = Runnable { if (!edSearch.text.isNullOrEmpty()) searchTrack(edSearch.text.toString()) }
     private var isClickAllowed = true
 
     private val historyAdapter = TrackAdapter(ArrayList()).apply {

@@ -1,7 +1,10 @@
 package com.practicum.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.DisplayMetrics
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -11,6 +14,9 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -25,6 +31,13 @@ class PlayerActivity : AppCompatActivity() {
     private val playerCountryInfo: TextView by lazy {findViewById(R.id.playerCountryInfo)}
     private val playerImageView: ImageView by lazy { findViewById(R.id.playerImageView) }
     private val playerAlbumGroup: Group by lazy { findViewById(R.id.playerAlbumGroup) }
+    private val playerTrackTimeProgress: TextView by lazy {findViewById(R.id.playerTrackTimeProgress)}
+    private val playerPlayTrack: ImageButton by lazy {findViewById(R.id.playerPlayTrack)}
+
+    private var mediaPlayer = MediaPlayer()
+    private var playerState = PlayerState.DEFAULT
+
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,10 +47,25 @@ class PlayerActivity : AppCompatActivity() {
 
         init()
         setVisibility()
+        preparePlayer()
 
         btPlayerBack.setOnClickListener {
             finish()
         }
+
+        playerPlayTrack.setOnClickListener {
+            playbackControl()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
     }
 
     private fun getCurrentTrack(): Track? {
@@ -71,7 +99,83 @@ class PlayerActivity : AppCompatActivity() {
         playerAlbumGroup.isVisible = !playerAlbumInfo.text.isNullOrEmpty()
     }
 
+    private fun preparePlayer() {
+        try {
+            mediaPlayer.setDataSource(track?.previewUrl.orEmpty())
+            mediaPlayer.prepareAsync()
+        } catch (e: Exception) {
+            playerPlayTrack.imageAlpha = 75
+            playerPlayTrack.isEnabled = false
+            return
+        }
+        mediaPlayer.setOnPreparedListener {
+            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
+            playerPlayTrack.imageAlpha = 255
+            playerPlayTrack.isEnabled = true
+            playerState = PlayerState.PREPARED
+        }
+        mediaPlayer.setOnCompletionListener {
+            stopTimerTask()
+            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
+            playerState = PlayerState.PREPARED
+        }
+    }
+
+    private fun startPlayer() {
+        if (playerState != PlayerState.DEFAULT) {
+            mediaPlayer.start()
+            playerPlayTrack.setImageResource(R.drawable.ic_pause_track)
+            playerState = PlayerState.PLAYING
+            handler.post(runTimerTask())
+        }
+    }
+
+    private fun pausePlayer() {
+        if (playerState != PlayerState.DEFAULT) {
+            mediaPlayer.pause()
+            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
+            playerState = PlayerState.PAUSED
+            stopTimerTask()
+        }
+    }
+
+    private fun playbackControl() {
+        when(playerState) {
+            PlayerState.PLAYING -> {
+                pausePlayer()
+            }
+            PlayerState.PREPARED, PlayerState.PAUSED -> {
+                startPlayer()
+            }
+            else -> {}
+        }
+    }
+    private fun setTime() {
+        when (playerState) {
+            PlayerState.PLAYING -> {
+                playerTrackTimeProgress.text =
+                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
+            }
+            PlayerState.PREPARED, PlayerState.DEFAULT -> {
+                playerTrackTimeProgress.text = getString(R.string.player_time_progress_default)
+            }
+            else -> {}
+        }
+    }
+
+    private fun runTimerTask(): Runnable {
+        return Runnable {
+            setTime()
+            handler.postDelayed(runTimerTask(), TIME_DEBOUNCE_DELAY)
+        }
+    }
+
+    private fun stopTimerTask(){
+        handler.removeCallbacks(runTimerTask())
+    }
+
     companion object {
         const val TRACK = "Track"
+        private const val TIME_DEBOUNCE_DELAY = 500L
     }
 }
