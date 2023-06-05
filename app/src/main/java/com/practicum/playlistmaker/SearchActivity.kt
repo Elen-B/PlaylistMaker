@@ -36,6 +36,7 @@ class SearchActivity : AppCompatActivity() {
     private val searchHistoryView: View by lazy { findViewById(R.id.searchHistory)}
     private val recyclerHistory: RecyclerView by lazy { searchHistoryView.findViewById(R.id.SearchList)}
     private val searchHistory: SearchHistory by lazy { SearchHistory((applicationContext as App).appPreferences)}
+    private val progressBar: View by lazy { findViewById(R.id.progressBar)}
     private var searchText: String? = ""
 
     private val handler = Handler(Looper.getMainLooper())
@@ -146,6 +147,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTrack(searchText: String) {
+        showSearchResultView(SearchResultView.PROGRESS)
         iTunesAPIService.search(searchText)
             .enqueue(object: Callback<TrackSearchResponse> {
                 override fun onResponse(
@@ -180,6 +182,7 @@ class SearchActivity : AppCompatActivity() {
         trackEmptyView.isVisible = viewType == SearchResultView.EMPTY
         trackErrorView.isVisible = viewType == SearchResultView.ERROR
         searchHistoryView.isVisible = viewType == SearchResultView.HISTORY
+        progressBar.isVisible = viewType == SearchResultView.PROGRESS
     }
 
     private fun showPlayerActivity(track: Track) {

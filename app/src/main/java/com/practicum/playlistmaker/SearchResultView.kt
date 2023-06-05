@@ -1,5 +1,5 @@
 package com.practicum.playlistmaker
 
 enum class SearchResultView{
-    LIST, EMPTY, ERROR, HISTORY
+    LIST, EMPTY, ERROR, HISTORY, PROGRESS
 }
