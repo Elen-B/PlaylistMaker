@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker
 
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -30,7 +31,8 @@ class TrackViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
             .load(model.artworkUrl100)
             .placeholder(R.drawable.ic_track)
             .centerCrop()
-            .transform(RoundedCorners(5))
+            .transform(RoundedCorners((itemView.resources.getDimension(R.dimen.small_album_round_corners) * (itemView.resources
+                .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()))
             .into(trackImageView)
     }
 }

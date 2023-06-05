@@ -1,15 +1,17 @@
 package com.practicum.playlistmaker
 
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+
 
 class PlayerActivity : AppCompatActivity() {
     private val track: Track? by lazy { getCurrentTrack()}
@@ -58,7 +60,10 @@ class PlayerActivity : AppCompatActivity() {
             .load(track?.getCoverArtwork())
             .placeholder(R.drawable.ic_track)
             .centerCrop()
-            .transform(RoundedCorners(32))
+            .transform(RoundedCorners(
+                (resources.getDimension(R.dimen.large_album_round_corners) * (resources
+                    .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+            ))
             .into(playerImageView)
     }
 
