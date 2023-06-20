@@ -104,13 +104,13 @@ class PlayerActivity : AppCompatActivity() {
             mediaPlayer.setDataSource(track?.previewUrl.orEmpty())
             mediaPlayer.prepareAsync()
         } catch (e: Exception) {
-            playerPlayTrack.imageAlpha = 75
+            playerPlayTrack.imageAlpha = GREY_IMAGE_ALPHA_CHANNEL
             playerPlayTrack.isEnabled = false
             return
         }
         mediaPlayer.setOnPreparedListener {
             playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-            playerPlayTrack.imageAlpha = 255
+            playerPlayTrack.imageAlpha = WHITE_IMAGE_ALPHA_CHANNEL
             playerPlayTrack.isEnabled = true
             playerState = PlayerState.PREPARED
         }
@@ -177,5 +177,7 @@ class PlayerActivity : AppCompatActivity() {
     companion object {
         const val TRACK = "Track"
         private const val TIME_DEBOUNCE_DELAY = 500L
+        private const val GREY_IMAGE_ALPHA_CHANNEL = 75
+        private const val WHITE_IMAGE_ALPHA_CHANNEL = 255
     }
 }
