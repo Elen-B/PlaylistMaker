@@ -29,4 +29,5 @@
     <dimen name="xlarge_margin">36dp</dimen>
     <dimen name="small_album_round_corners">2dp</dimen>
     <dimen name="large_album_round_corners">8dp</dimen>
+    <dimen name="progress_bar_size">44dp</dimen>
 </resources>

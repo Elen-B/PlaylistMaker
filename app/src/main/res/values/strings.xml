@@ -21,7 +21,7 @@
     <string name="player_year_caption">Год</string>
     <string name="player_album_caption">Альбом</string>
     <string name="player_track_time_caption">Длительность</string>
-    <string name="player_time_progress_default">0:00</string>
+    <string name="player_time_progress_default">00:00</string>
     <string name="player_description_play">воспроизвести</string>
     <string name="player_description_add">в playlist</string>
     <string name="player_description_like">нравится</string>

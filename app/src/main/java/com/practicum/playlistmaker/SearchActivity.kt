@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -34,11 +36,18 @@ class SearchActivity : AppCompatActivity() {
     private val searchHistoryView: View by lazy { findViewById(R.id.searchHistory)}
     private val recyclerHistory: RecyclerView by lazy { searchHistoryView.findViewById(R.id.SearchList)}
     private val searchHistory: SearchHistory by lazy { SearchHistory((applicationContext as App).appPreferences)}
+    private val progressBar: View by lazy { findViewById(R.id.progressBar)}
     private var searchText: String? = ""
+
+    private val handler = Handler(Looper.getMainLooper())
+    private val searchRunnable = Runnable { if (!edSearch.text.isNullOrEmpty()) searchTrack(edSearch.text.toString()) }
+    private var isClickAllowed = true
 
     private val historyAdapter = TrackAdapter(ArrayList()).apply {
         clickListener = TrackAdapter.TrackClickListener {
-            showPlayerActivity(it)
+            if (clickDebounce()) {
+                showPlayerActivity(it)
+            }
         }
     }
 
@@ -47,7 +56,9 @@ class SearchActivity : AppCompatActivity() {
         clickListener = TrackAdapter.TrackClickListener {
             searchHistory.addTrack(it)
             historyAdapter.addItems(searchHistory.trackHistoryList)
-            showPlayerActivity(it)
+            if (clickDebounce()) {
+                showPlayerActivity(it)
+            }
         }
     }
 
@@ -77,6 +88,7 @@ class SearchActivity : AppCompatActivity() {
                     showSearchResultView(SearchResultView.HISTORY)
                 }
                 else {
+                    searchDebounce()
                     showSearchResultView(SearchResultView.LIST)
                 }
             }
@@ -135,6 +147,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun searchTrack(searchText: String) {
+        showSearchResultView(SearchResultView.PROGRESS)
         iTunesAPIService.search(searchText)
             .enqueue(object: Callback<TrackSearchResponse> {
                 override fun onResponse(
@@ -169,6 +182,7 @@ class SearchActivity : AppCompatActivity() {
         trackEmptyView.isVisible = viewType == SearchResultView.EMPTY
         trackErrorView.isVisible = viewType == SearchResultView.ERROR
         searchHistoryView.isVisible = viewType == SearchResultView.HISTORY
+        progressBar.isVisible = viewType == SearchResultView.PROGRESS
     }
 
     private fun showPlayerActivity(track: Track) {
@@ -177,7 +191,23 @@ class SearchActivity : AppCompatActivity() {
         startActivity(playerIntent)
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun clickDebounce() : Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
     companion object {
         const val SEARCH_TEXT = "SEARCH_TEXT"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
