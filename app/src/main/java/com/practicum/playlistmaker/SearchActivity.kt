@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -19,13 +20,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.practicum.playlistmaker.Creator.provideTrackInteractor
+import com.practicum.playlistmaker.domain.api.TrackInteractor
+import com.practicum.playlistmaker.domain.models.SearchResultView
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.ui.PlayerActivity
 
 
 class SearchActivity : AppCompatActivity() {
-    private val iTunesAPIService = ITunesApi.create()
+    private val trackProvider = provideTrackInteractor()
 
     val edSearch: EditText by lazy { findViewById(R.id.edSearch) }
     private val btSearchBack: ImageButton by lazy {findViewById(R.id.btSearchBack)}
@@ -148,30 +151,28 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchTrack(searchText: String) {
         showSearchResultView(SearchResultView.PROGRESS)
-        iTunesAPIService.search(searchText)
-            .enqueue(object: Callback<TrackSearchResponse> {
-                override fun onResponse(
-                    call: Call<TrackSearchResponse>,
-                    response: Response<TrackSearchResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            showSearchResultView(SearchResultView.LIST)
-                            trackAdapter.addItems(response.body()?.results!!)
-                        }
-                        else {
-                            showSearchResultView(SearchResultView.EMPTY)
-                        }
-                    }
-                    else {
-                        showSearchResultView(SearchResultView.ERROR)
+        trackProvider.search(searchText, object : TrackInteractor.TrackConsumer {
+            override fun consume(foundTracks: ArrayList<Track>) {
+                if (foundTracks.isNotEmpty()) {
+                    handler.post {
+                        showSearchResultView(SearchResultView.LIST)
+                        trackAdapter.addItems(foundTracks)
                     }
                 }
-
-                override fun onFailure(call: Call<TrackSearchResponse>, t: Throwable) {
+            }
+            override fun onEmpty() {
+                handler.post {
+                    Log.e("onFailure", "EMPTY")
+                    showSearchResultView(SearchResultView.EMPTY)
+                }
+            }
+            override fun onFailure() {
+                handler.post {
+                    Log.e("onFailure", "onFailure")
                     showSearchResultView(SearchResultView.ERROR)
                 }
-            })
+            }
+        })
     }
 
     private fun showSearchResultView(viewType: SearchResultView) {

@@ -8,8 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.practicum.playlistmaker.domain.models.Track
 
 class TrackViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
@@ -25,7 +24,7 @@ class TrackViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
         trackInfoView.text = itemView.context.getString(
             R.string.track_info,
             model.artistName,
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTime)
+            model.trackTime
         )
         Glide.with(itemView)
             .load(model.artworkUrl100)

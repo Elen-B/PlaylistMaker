@@ -1,6 +1,5 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.ui
 
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -14,9 +13,9 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import java.lang.Exception
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.practicum.playlistmaker.Creator
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.domain.models.Track
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -34,8 +33,7 @@ class PlayerActivity : AppCompatActivity() {
     private val playerTrackTimeProgress: TextView by lazy {findViewById(R.id.playerTrackTimeProgress)}
     private val playerPlayTrack: ImageButton by lazy {findViewById(R.id.playerPlayTrack)}
 
-    private var mediaPlayer = MediaPlayer()
-    private var playerState = PlayerState.DEFAULT
+    private val audioPlayer = Creator.providePlayerInteractorImpl()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -47,25 +45,34 @@ class PlayerActivity : AppCompatActivity() {
 
         init()
         setVisibility()
-        preparePlayer()
+        audioPlayer.preparePlayer(track?.previewUrl, {
+            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
+            playerPlayTrack.imageAlpha = WHITE_IMAGE_ALPHA_CHANNEL
+            playerPlayTrack.isEnabled = true
+        }, {
+            onPausePlayer()
+        }, {
+            playerPlayTrack.imageAlpha = GREY_IMAGE_ALPHA_CHANNEL
+            playerPlayTrack.isEnabled = false
+        })
 
         btPlayerBack.setOnClickListener {
             finish()
         }
 
         playerPlayTrack.setOnClickListener {
-            playbackControl()
+            audioPlayer.playbackControl({ onStartPlayer() }, { onPausePlayer() })
         }
     }
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        audioPlayer.pausePlayer { onPausePlayer() }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mediaPlayer.release()
+        audioPlayer.release()
     }
 
     private fun getCurrentTrack(): Track? {
@@ -79,7 +86,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun init() {
         playerTrackName.text = track?.trackName.orEmpty()
         playerArtistName.text = track?.artistName.orEmpty()
-        playerTrackTimeInfo.text = track?.getTrackTime()
+        playerTrackTimeInfo.text = track?.trackTime.orEmpty()
         playerAlbumInfo.text = track?.albumName.orEmpty()
         playerCountryInfo.text = track?.country.orEmpty()
         playerTrackYearInfo.text = track?.getReleaseYear().orEmpty()
@@ -99,67 +106,20 @@ class PlayerActivity : AppCompatActivity() {
         playerAlbumGroup.isVisible = !playerAlbumInfo.text.isNullOrEmpty()
     }
 
-    private fun preparePlayer() {
-        try {
-            mediaPlayer.setDataSource(track?.previewUrl.orEmpty())
-            mediaPlayer.prepareAsync()
-        } catch (e: Exception) {
-            playerPlayTrack.imageAlpha = GREY_IMAGE_ALPHA_CHANNEL
-            playerPlayTrack.isEnabled = false
-            return
-        }
-        mediaPlayer.setOnPreparedListener {
-            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-            playerPlayTrack.imageAlpha = WHITE_IMAGE_ALPHA_CHANNEL
-            playerPlayTrack.isEnabled = true
-            playerState = PlayerState.PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
-            stopTimerTask()
-            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-            playerState = PlayerState.PREPARED
-        }
+    private fun onStartPlayer() {
+        playerPlayTrack.setImageResource(R.drawable.ic_pause_track)
+        handler.post(runTimerTask())
     }
 
-    private fun startPlayer() {
-        if (playerState != PlayerState.DEFAULT) {
-            mediaPlayer.start()
-            playerPlayTrack.setImageResource(R.drawable.ic_pause_track)
-            playerState = PlayerState.PLAYING
-            handler.post(runTimerTask())
-        }
+    private fun onPausePlayer() {
+        playerPlayTrack.setImageResource(R.drawable.ic_play_track)
+        stopTimerTask()
     }
 
-    private fun pausePlayer() {
-        if (playerState != PlayerState.DEFAULT) {
-            mediaPlayer.pause()
-            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-            playerState = PlayerState.PAUSED
-            stopTimerTask()
-        }
-    }
-
-    private fun playbackControl() {
-        when(playerState) {
-            PlayerState.PLAYING -> {
-                pausePlayer()
-            }
-            PlayerState.PREPARED, PlayerState.PAUSED -> {
-                startPlayer()
-            }
-            else -> {}
-        }
-    }
     private fun setTime() {
-        when (playerState) {
-            PlayerState.PLAYING -> {
-                playerTrackTimeProgress.text =
-                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayer.currentPosition)
-            }
-            PlayerState.PREPARED, PlayerState.DEFAULT -> {
-                playerTrackTimeProgress.text = getString(R.string.player_time_progress_default)
-            }
-            else -> {}
+        val currentTime = audioPlayer.getCurrentPosition(getString(R.string.player_time_progress_default))
+        if (!currentTime.isNullOrEmpty()) {
+            playerTrackTimeProgress.text = currentTime
         }
     }
 
