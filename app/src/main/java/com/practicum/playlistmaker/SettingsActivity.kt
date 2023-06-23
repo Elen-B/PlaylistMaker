@@ -32,24 +32,40 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         btShareApp.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_url))
-            startActivity(Intent.createChooser(shareIntent, getString(R.string.tune_share_app)))
+            try {
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "text/plain"
+                shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_url))
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.tune_share_app)))
+            } finally {
+            }
         }
 
         btService.setOnClickListener {
-            val serviceIntent = Intent(Intent.ACTION_SENDTO)
-            serviceIntent.data = Uri.parse(getString(R.string.mailto))
-            serviceIntent.putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.service_email)))
-            serviceIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.service_email_subject))
-            serviceIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.service_email_body))
-            startActivity(serviceIntent)
+            try {
+                val serviceIntent = Intent(Intent.ACTION_SENDTO)
+                serviceIntent.data = Uri.parse(getString(R.string.mailto))
+                serviceIntent.putExtra(
+                    Intent.EXTRA_EMAIL,
+                    arrayOf(getString(R.string.service_email))
+                )
+                serviceIntent.putExtra(
+                    Intent.EXTRA_SUBJECT,
+                    getString(R.string.service_email_subject)
+                )
+                serviceIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.service_email_body))
+                startActivity(serviceIntent)
+            } finally {
+            }
         }
 
         btTermsOfUse.setOnClickListener {
-            val browseIntent = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
-            startActivity(browseIntent)
+            try {
+                val browseIntent =
+                    Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
+                startActivity(browseIntent)
+            } finally {
+            }
         }
     }
 }
