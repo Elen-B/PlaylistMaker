@@ -18,7 +18,7 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
     ): ArrayList<Track> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         if (response.resultCode == 200) {
-            val list = (response as TrackSearchResponse).results.map {
+            val arrayList = ArrayList<Track>((response as TrackSearchResponse).results.map {
                 Track(
                     it.trackId,
                     it.trackName,
@@ -31,9 +31,8 @@ class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepos
                     it.country,
                     it.previewUrl
                 )
-            }
-            val arrayList = ArrayList<Track>()
-            arrayList.addAll(list)
+            })
+
             if (arrayList.isEmpty()) {
                 onEmpty()
             }
