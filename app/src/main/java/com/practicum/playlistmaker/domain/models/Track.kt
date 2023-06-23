@@ -13,26 +13,28 @@ data class Track(
     val trackTime: String?,
     val artworkUrl100: String?,
     val albumName: String?,
-    val releaseDate: Date,
+    val releaseDate: Date?,
     val genreName: String?,
     val country: String?,
     val previewUrl: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
-        parcel.readString()!!,
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
         parcel.readString(),
         Date(parcel.readLong()),
-        parcel.readString()!!,
+        parcel.readString(),
         parcel.readString(),
         parcel.readString()
     )
 
     fun getCoverArtwork() = artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
-    fun getReleaseYear(): String = SimpleDateFormat("yyyy", Locale.getDefault()).format(releaseDate)
+    fun getReleaseYear(): String =
+        SimpleDateFormat("yyyy", Locale.getDefault()).format(releaseDate!!).orEmpty()
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(trackId!!)
         parcel.writeString(trackName)
@@ -40,7 +42,7 @@ data class Track(
         parcel.writeString(trackTime)
         parcel.writeString(artworkUrl100)
         parcel.writeString(albumName)
-        parcel.writeLong(releaseDate.time)
+        parcel.writeLong(releaseDate?.time ?: 0)
         parcel.writeString(genreName)
         parcel.writeString(country)
         parcel.writeString(previewUrl)

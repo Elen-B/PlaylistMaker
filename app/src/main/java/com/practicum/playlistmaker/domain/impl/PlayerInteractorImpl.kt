@@ -7,7 +7,8 @@ import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRepository): PlayerInteractor {
+class PlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRepository) :
+    PlayerInteractor {
     private var playerState = PlayerState.DEFAULT
 
     override fun preparePlayer(
@@ -49,20 +50,25 @@ class PlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerReposit
     }
 
     override fun playbackControl(onStart: () -> Unit, onPause: () -> Unit) {
-        when(playerState) {
+        when (playerState) {
             PlayerState.PLAYING -> {
                 pausePlayer(onPause)
             }
+
             PlayerState.PREPARED, PlayerState.PAUSED -> {
                 startPlayer(onStart)
             }
+
             else -> {}
         }
     }
 
     override fun getCurrentPosition(default: String?): String? {
         return when (playerState) {
-            PlayerState.PLAYING -> SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayerRepository.getCurrentPosition())
+            PlayerState.PLAYING -> SimpleDateFormat("mm:ss", Locale.getDefault()).format(
+                mediaPlayerRepository.getCurrentPosition()
+            )
+
             PlayerState.PREPARED, PlayerState.DEFAULT -> default
             else -> null
         }

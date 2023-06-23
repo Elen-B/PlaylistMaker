@@ -19,19 +19,19 @@ import com.practicum.playlistmaker.domain.models.Track
 
 
 class PlayerActivity : AppCompatActivity() {
-    private val track: Track? by lazy { getCurrentTrack()}
+    private val track: Track? by lazy { getCurrentTrack() }
 
-    private val playerTrackName: TextView by lazy {findViewById(R.id.playerTrackName)}
-    private val playerArtistName: TextView by lazy {findViewById(R.id.playerArtistName)}
-    private val playerAlbumInfo: TextView by lazy {findViewById(R.id.playerAlbumInfo)}
-    private val playerTrackTimeInfo: TextView by lazy {findViewById(R.id.playerTrackTimeInfo)}
-    private val playerTrackYearInfo: TextView by lazy {findViewById(R.id.playerTrackYearInfo)}
-    private val playerGenreInfo: TextView by lazy {findViewById(R.id.playerGenreInfo)}
-    private val playerCountryInfo: TextView by lazy {findViewById(R.id.playerCountryInfo)}
+    private val playerTrackName: TextView by lazy { findViewById(R.id.playerTrackName) }
+    private val playerArtistName: TextView by lazy { findViewById(R.id.playerArtistName) }
+    private val playerAlbumInfo: TextView by lazy { findViewById(R.id.playerAlbumInfo) }
+    private val playerTrackTimeInfo: TextView by lazy { findViewById(R.id.playerTrackTimeInfo) }
+    private val playerTrackYearInfo: TextView by lazy { findViewById(R.id.playerTrackYearInfo) }
+    private val playerGenreInfo: TextView by lazy { findViewById(R.id.playerGenreInfo) }
+    private val playerCountryInfo: TextView by lazy { findViewById(R.id.playerCountryInfo) }
     private val playerImageView: ImageView by lazy { findViewById(R.id.playerImageView) }
     private val playerAlbumGroup: Group by lazy { findViewById(R.id.playerAlbumGroup) }
-    private val playerTrackTimeProgress: TextView by lazy {findViewById(R.id.playerTrackTimeProgress)}
-    private val playerPlayTrack: ImageButton by lazy {findViewById(R.id.playerPlayTrack)}
+    private val playerTrackTimeProgress: TextView by lazy { findViewById(R.id.playerTrackTimeProgress) }
+    private val playerPlayTrack: ImageButton by lazy { findViewById(R.id.playerPlayTrack) }
 
     private val audioPlayer = Creator.providePlayerInteractorImpl()
 
@@ -95,10 +95,12 @@ class PlayerActivity : AppCompatActivity() {
             .load(track?.getCoverArtwork())
             .placeholder(R.drawable.ic_track)
             .centerCrop()
-            .transform(RoundedCorners(
-                (resources.getDimension(R.dimen.large_album_round_corners) * (resources
-                    .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
-            ))
+            .transform(
+                RoundedCorners(
+                    (resources.getDimension(R.dimen.large_album_round_corners) * (resources
+                        .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()
+                )
+            )
             .into(playerImageView)
     }
 
@@ -117,7 +119,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun setTime() {
-        val currentTime = audioPlayer.getCurrentPosition(getString(R.string.player_time_progress_default))
+        val currentTime =
+            audioPlayer.getCurrentPosition(getString(R.string.player_time_progress_default))
         if (!currentTime.isNullOrEmpty()) {
             playerTrackTimeProgress.text = currentTime
         }
@@ -130,7 +133,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun stopTimerTask(){
+    private fun stopTimerTask() {
         handler.removeCallbacks(runTimerTask())
     }
 

@@ -7,6 +7,7 @@ interface PlayerInteractor {
         onCompletionListener: () -> Unit,
         onError: () -> Unit
     )
+
     fun startPlayer(onStart: () -> Unit)
     fun pausePlayer(onPause: () -> Unit)
     fun playbackControl(onStart: () -> Unit, onPause: () -> Unit)

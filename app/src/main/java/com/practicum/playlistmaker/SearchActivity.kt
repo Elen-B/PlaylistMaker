@@ -31,19 +31,20 @@ class SearchActivity : AppCompatActivity() {
     private val trackProvider = provideTrackInteractor()
 
     val edSearch: EditText by lazy { findViewById(R.id.edSearch) }
-    private val btSearchBack: ImageButton by lazy {findViewById(R.id.btSearchBack)}
-    private val btClearSearch: ImageView by lazy {findViewById(R.id.btClearSearch)}
-    private val recyclerSearch: RecyclerView by lazy { findViewById(R.id.trackList)}
-    private val trackEmptyView: View by lazy { findViewById(R.id.trackEmpty)}
-    private val trackErrorView: View by lazy { findViewById(R.id.trackError)}
-    private val searchHistoryView: View by lazy { findViewById(R.id.searchHistory)}
-    private val recyclerHistory: RecyclerView by lazy { searchHistoryView.findViewById(R.id.SearchList)}
-    private val searchHistory: SearchHistory by lazy { SearchHistory((applicationContext as App).appPreferences)}
-    private val progressBar: View by lazy { findViewById(R.id.progressBar)}
+    private val btSearchBack: ImageButton by lazy { findViewById(R.id.btSearchBack) }
+    private val btClearSearch: ImageView by lazy { findViewById(R.id.btClearSearch) }
+    private val recyclerSearch: RecyclerView by lazy { findViewById(R.id.trackList) }
+    private val trackEmptyView: View by lazy { findViewById(R.id.trackEmpty) }
+    private val trackErrorView: View by lazy { findViewById(R.id.trackError) }
+    private val searchHistoryView: View by lazy { findViewById(R.id.searchHistory) }
+    private val recyclerHistory: RecyclerView by lazy { searchHistoryView.findViewById(R.id.SearchList) }
+    private val searchHistory: SearchHistory by lazy { SearchHistory((applicationContext as App).appPreferences) }
+    private val progressBar: View by lazy { findViewById(R.id.progressBar) }
     private var searchText: String? = ""
 
     private val handler = Handler(Looper.getMainLooper())
-    private val searchRunnable = Runnable { if (!edSearch.text.isNullOrEmpty()) searchTrack(edSearch.text.toString()) }
+    private val searchRunnable =
+        Runnable { if (!edSearch.text.isNullOrEmpty()) searchTrack(edSearch.text.toString()) }
     private var isClickAllowed = true
 
     private val historyAdapter = TrackAdapter(ArrayList()).apply {
@@ -76,11 +77,12 @@ class SearchActivity : AppCompatActivity() {
 
         btClearSearch.setOnClickListener {
             edSearch.setText("")
-            val imm = edSearch.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                edSearch.context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(edSearch.windowToken, 0)
         }
 
-        val searchTextWatcher = object: TextWatcher {
+        val searchTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
             }
@@ -89,8 +91,7 @@ class SearchActivity : AppCompatActivity() {
                 btClearSearch.isVisible = !s.isNullOrEmpty()
                 if (edSearch.hasFocus() && s?.isEmpty() == true && searchHistory.trackHistoryList.size > 0) {
                     showSearchResultView(SearchResultView.HISTORY)
-                }
-                else {
+                } else {
                     searchDebounce()
                     showSearchResultView(SearchResultView.LIST)
                 }
@@ -111,8 +112,7 @@ class SearchActivity : AppCompatActivity() {
         edSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && edSearch.text.isEmpty() && searchHistory.trackHistoryList.size > 0) {
                 showSearchResultView(SearchResultView.HISTORY)
-            }
-            else {
+            } else {
                 showSearchResultView(SearchResultView.LIST)
             }
         }
@@ -143,7 +143,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     override fun onRestoreInstanceState(
-        savedInstanceState: Bundle) {
+        savedInstanceState: Bundle
+    ) {
         super.onRestoreInstanceState(savedInstanceState)
         edSearch.setText(savedInstanceState.getString(SEARCH_TEXT))
         edSearch.setSelection(edSearch.text.length)
@@ -160,12 +161,14 @@ class SearchActivity : AppCompatActivity() {
                     }
                 }
             }
+
             override fun onEmpty() {
                 handler.post {
                     Log.e("onFailure", "EMPTY")
                     showSearchResultView(SearchResultView.EMPTY)
                 }
             }
+
             override fun onFailure() {
                 handler.post {
                     Log.e("onFailure", "onFailure")
@@ -197,7 +200,7 @@ class SearchActivity : AppCompatActivity() {
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    private fun clickDebounce() : Boolean {
+    private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false

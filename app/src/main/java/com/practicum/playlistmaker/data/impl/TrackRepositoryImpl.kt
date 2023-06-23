@@ -11,15 +11,19 @@ import java.util.Locale
 class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
 
 
-    override fun search(expression: String, onEmpty: ()->Unit, onFailure: ()->Unit): ArrayList<Track> {
+    override fun search(
+        expression: String,
+        onEmpty: () -> Unit,
+        onFailure: () -> Unit
+    ): ArrayList<Track> {
         val response = networkClient.doRequest(TrackSearchRequest(expression))
         if (response.resultCode == 200) {
-            val list =(response as TrackSearchResponse).results.map {
+            val list = (response as TrackSearchResponse).results.map {
                 Track(
                     it.trackId,
                     it.trackName,
                     it.artistName,
-                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis),
+                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis ?: 0),
                     it.artworkUrl100,
                     it.collectionName,
                     it.releaseDate,
