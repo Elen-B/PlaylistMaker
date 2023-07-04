@@ -37,7 +37,7 @@ class SettingsActivity : AppCompatActivity() {
                 shareIntent.type = "text/plain"
                 shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_url))
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.tune_share_app)))
-            } finally {
+            } catch(_: Exception) {
             }
         }
 
@@ -55,7 +55,7 @@ class SettingsActivity : AppCompatActivity() {
                 )
                 serviceIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.service_email_body))
                 startActivity(serviceIntent)
-            } finally {
+            } catch(_: Exception) {
             }
         }
 
@@ -64,7 +64,7 @@ class SettingsActivity : AppCompatActivity() {
                 val browseIntent =
                     Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
                 startActivity(browseIntent)
-            } finally {
+            } catch(_: Exception) {
             }
         }
     }
