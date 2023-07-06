@@ -1,49 +1,49 @@
 package com.practicum.playlistmaker.settings.ui
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
 import com.practicum.playlistmaker.settings.presentation.view_model.SettingsViewModel
 
 class SettingsActivity : AppCompatActivity() {
-    private val scNightTheme: SwitchCompat by lazy { findViewById(R.id.scNightTheme) }
+    private lateinit var binding: ActivitySettingsBinding
 
-    private val viewModel: SettingsViewModel by lazy { ViewModelProvider(this, SettingsViewModel.getViewModelFactory())[SettingsViewModel::class.java] }
+    private val viewModel: SettingsViewModel by lazy {
+        ViewModelProvider(
+            this,
+            SettingsViewModel.getViewModelFactory((applicationContext as App).appPreferences)
+        )[SettingsViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
 
-        val btSettingsBack = findViewById<ImageButton>(R.id.btSettingsBack)
-        val btShareApp = findViewById<Button>(R.id.btShareApp)
-        val btService = findViewById<Button>(R.id.btService)
-        val btTermsOfUse = findViewById<Button>(R.id.btTermsOfUse)
+        setContentView(binding.root)
 
-        scNightTheme.isChecked = (applicationContext as App).darkTheme
+        viewModel.observeDarkTheme().observe(this) {
+            binding.scNightTheme.isChecked = viewModel.observeDarkTheme().value == true
+        }
 
-        btSettingsBack.setOnClickListener {
+        binding.btSettingsBack.setOnClickListener {
             finish()
         }
 
-        scNightTheme.setOnCheckedChangeListener { _, isChecked ->
-            (applicationContext as App).setAppDarkTheme(isChecked)
-            (applicationContext as App).saveAppPreferences(App.DARK_THEME_KEY, isChecked)
+        binding.scNightTheme.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.switchTheme(isChecked)
         }
 
-        btShareApp.setOnClickListener {
+        binding.btShareApp.setOnClickListener {
             viewModel.onShareAppBtnClick()
         }
 
-        btService.setOnClickListener {
+        binding.btService.setOnClickListener {
             viewModel.onServiceBtnClick()
         }
 
-        btTermsOfUse.setOnClickListener {
+        binding.btTermsOfUse.setOnClickListener {
             viewModel.onTermsOfUseBtnClick()
         }
     }
