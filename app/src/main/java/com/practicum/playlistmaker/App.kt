@@ -24,8 +24,4 @@ class App : Application() {
             }
         )
     }
-
-    companion object {
-        const val SEARCH_HISTORY_TRACKS = "search_history_tracks"
-    }
 }

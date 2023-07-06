@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.search.domain.impl
 
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.api.TrackRepository
+import com.practicum.playlistmaker.search.domain.utils.Resource
 import java.util.concurrent.Executors
 
 class TrackInteractorImpl(private val repository: TrackRepository) : TrackInteractor {
@@ -10,12 +11,15 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
 
     override fun search(expression: String, consumer: TrackInteractor.TrackConsumer) {
         executor.execute {
-            consumer.consume(
-                repository.search(
-                    expression,
-                    { consumer.onEmpty() },
-                    { consumer.onFailure() })
-            )
+            when (val resource = repository.search(expression)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
+            }
         }
     }
 }

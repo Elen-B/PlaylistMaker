@@ -6,8 +6,6 @@ interface TrackInteractor {
     fun search(expression: String, consumer: TrackConsumer)
 
     interface TrackConsumer {
-        fun consume(foundTracks: ArrayList<Track>)
-        fun onEmpty()
-        fun onFailure()
+        fun consume(foundTracks: ArrayList<Track>?, errorMessage: String?)
     }
 }
