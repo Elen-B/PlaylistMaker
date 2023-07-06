@@ -28,11 +28,6 @@ class TrackAdapter(private var items: ArrayList<Track>) : RecyclerView.Adapter<T
         this.notifyDataSetChanged()
     }
 
-    fun deleteItems() {
-        this.items.clear()
-        this.notifyDataSetChanged()
-    }
-
     fun interface TrackClickListener {
         fun onTrackClick(track: Track)
     }
