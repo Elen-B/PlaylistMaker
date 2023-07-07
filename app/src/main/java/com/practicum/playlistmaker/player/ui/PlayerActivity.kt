@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.DisplayMetrics
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -13,15 +11,19 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.player.presentation.mapper.ParcelableTrackMapper
+import com.practicum.playlistmaker.player.presentation.models.ParcelableTrack
+import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
+import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 
 
 class PlayerActivity : AppCompatActivity() {
-    private val track: Track? by lazy { getCurrentTrack() }
+    private lateinit var viewModel: PlayerViewModel
 
     private val playerTrackName: TextView by lazy { findViewById(R.id.playerTrackName) }
     private val playerArtistName: TextView by lazy { findViewById(R.id.playerArtistName) }
@@ -35,66 +37,64 @@ class PlayerActivity : AppCompatActivity() {
     private val playerTrackTimeProgress: TextView by lazy { findViewById(R.id.playerTrackTimeProgress) }
     private val playerPlayTrack: ImageButton by lazy { findViewById(R.id.playerPlayTrack) }
 
-    private val audioPlayer = Creator.providePlayerInteractorImpl()
-
-    private val handler = Handler(Looper.getMainLooper())
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        val btPlayerBack = findViewById<ImageButton>(R.id.btPlayerBack)
+        val track = getCurrentTrack()
+        viewModel = ViewModelProvider(
+            this,
+            PlayerViewModel.factory(track)
+        )[PlayerViewModel::class.java]
 
-        init()
-        setVisibility()
-        audioPlayer.preparePlayer(track?.previewUrl, {
-            playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-            playerPlayTrack.imageAlpha = WHITE_IMAGE_ALPHA_CHANNEL
-            playerPlayTrack.isEnabled = true
-        }, {
-            onPausePlayer()
-        }, {
-            playerPlayTrack.imageAlpha = GREY_IMAGE_ALPHA_CHANNEL
-            playerPlayTrack.isEnabled = false
-        })
+        viewModel.observeState().observe(this) {
+            render(it)
+        }
+
+        init(track)
+        val btPlayerBack = findViewById<ImageButton>(R.id.btPlayerBack)
 
         btPlayerBack.setOnClickListener {
             finish()
         }
 
         playerPlayTrack.setOnClickListener {
-            audioPlayer.playbackControl({ onStartPlayer() }, { onPausePlayer() })
+            viewModel.playBackControl()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        audioPlayer.pausePlayer { onPausePlayer() }
+        viewModel.pausePlayer()
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        audioPlayer.release()
-    }
-
-    private fun getCurrentTrack(): Track? {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(TRACK, Track::class.java)
+    private fun getCurrentTrack(): Track {
+        val track: ParcelableTrack? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(TRACK, ParcelableTrack::class.java)
         } else {
             intent.getParcelableExtra(TRACK)
         }
+        return ParcelableTrackMapper.map(track ?: ParcelableTrack())
+    }
+    private fun render(state: PlayerScreenState) {
+        when (state) {
+            is PlayerScreenState.Default -> onGetDefaultState()
+            is PlayerScreenState.Prepared -> onGetPreparedState()
+            is PlayerScreenState.Playing -> onGetPlayingState()
+            is PlayerScreenState.Progress -> onGetProgressState(state.time)
+            is PlayerScreenState.Paused -> onGetProgressState()
+        }
     }
 
-    private fun init() {
-        playerTrackName.text = track?.trackName.orEmpty()
-        playerArtistName.text = track?.artistName.orEmpty()
-        playerTrackTimeInfo.text = track?.trackTime.orEmpty()
-        playerAlbumInfo.text = track?.albumName.orEmpty()
-        playerCountryInfo.text = track?.country.orEmpty()
-        playerTrackYearInfo.text = track?.getReleaseYear().orEmpty()
-        playerGenreInfo.text = track?.genreName.orEmpty()
+    private fun init(track : Track) {
+        playerTrackName.text = track.trackName.orEmpty()
+        playerArtistName.text = track.artistName.orEmpty()
+        playerTrackTimeInfo.text = track.trackTime.orEmpty()
+        playerAlbumInfo.text = track.albumName.orEmpty()
+        playerCountryInfo.text = track.country.orEmpty()
+        playerTrackYearInfo.text = track.getReleaseYear()
+        playerGenreInfo.text = track.genreName.orEmpty()
         Glide.with(this)
-            .load(track?.getCoverArtwork())
+            .load(track.getCoverArtwork())
             .placeholder(R.drawable.ic_track)
             .centerCrop()
             .transform(
@@ -104,50 +104,44 @@ class PlayerActivity : AppCompatActivity() {
                 )
             )
             .into(playerImageView)
+
+        setVisibility()
     }
 
     private fun setVisibility() {
         playerAlbumGroup.isVisible = !playerAlbumInfo.text.isNullOrEmpty()
     }
-
-    private fun onStartPlayer() {
-        playerPlayTrack.setImageResource(R.drawable.ic_pause_track)
-        handler.post(runTimerTask())
+    private fun setTime(time: String?) {
+        if (!time.isNullOrEmpty()) {
+            playerTrackTimeProgress.text = time
+        }
     }
-
-    private fun onPausePlayer() {
+    private fun onGetDefaultState() {
+        playerPlayTrack.imageAlpha = GREY_IMAGE_ALPHA_CHANNEL
+        playerPlayTrack.isEnabled = false
+    }
+    private fun onGetPreparedState() {
         playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-        stopTimerTask()
+        playerPlayTrack.imageAlpha = WHITE_IMAGE_ALPHA_CHANNEL
+        playerPlayTrack.isEnabled = true
     }
-
-    private fun setTime() {
-        val currentTime =
-            audioPlayer.getCurrentPosition(getString(R.string.player_time_progress_default))
-        if (!currentTime.isNullOrEmpty()) {
-            playerTrackTimeProgress.text = currentTime
-        }
+    private fun onGetPlayingState() {
+        playerPlayTrack.setImageResource(R.drawable.ic_pause_track)
     }
-
-    private fun runTimerTask(): Runnable {
-        return Runnable {
-            setTime()
-            handler.postDelayed(runTimerTask(), TIME_DEBOUNCE_DELAY)
-        }
+    private fun onGetProgressState(time: String?) {
+        setTime(time)
     }
-
-    private fun stopTimerTask() {
-        handler.removeCallbacks(runTimerTask())
+    private fun onGetProgressState() {
+        playerPlayTrack.setImageResource(R.drawable.ic_play_track)
     }
-
     companion object {
         const val TRACK = "Track"
-        private const val TIME_DEBOUNCE_DELAY = 500L
         private const val GREY_IMAGE_ALPHA_CHANNEL = 75
         private const val WHITE_IMAGE_ALPHA_CHANNEL = 255
 
         fun show(context: Context, track: Track) {
             val intent = Intent(context, PlayerActivity::class.java)
-            intent.putExtra(TRACK, track)
+            intent.putExtra(TRACK, ParcelableTrackMapper.map(track))
 
             context.startActivity(intent)
         }
