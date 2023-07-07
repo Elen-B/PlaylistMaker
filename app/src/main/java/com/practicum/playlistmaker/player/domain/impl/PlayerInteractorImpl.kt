@@ -2,7 +2,7 @@ package com.practicum.playlistmaker.player.domain.impl
 
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerRepository
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
-import com.practicum.playlistmaker.player.presentation.models.PlayerState
+import com.practicum.playlistmaker.player.domain.models.PlayerState
 import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.Locale

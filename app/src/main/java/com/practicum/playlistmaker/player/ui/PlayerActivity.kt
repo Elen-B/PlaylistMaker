@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.player.ui
 
+import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -142,5 +144,12 @@ class PlayerActivity : AppCompatActivity() {
         private const val TIME_DEBOUNCE_DELAY = 500L
         private const val GREY_IMAGE_ALPHA_CHANNEL = 75
         private const val WHITE_IMAGE_ALPHA_CHANNEL = 255
+
+        fun show(context: Context, track: Track) {
+            val intent = Intent(context, PlayerActivity::class.java)
+            intent.putExtra(TRACK, track)
+
+            context.startActivity(intent)
+        }
     }
 }

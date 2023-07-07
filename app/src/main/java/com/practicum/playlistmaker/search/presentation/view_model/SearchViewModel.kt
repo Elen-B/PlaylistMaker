@@ -25,7 +25,7 @@ class SearchViewModel(
     fun observeState(): LiveData<SearchScreenState> = stateLiveData
 
     private val showPlayerTrigger = SingleEventLiveData<Track>()
-    //fun getShowPlayerTrigger(): LiveData<Track> = showPlayerTrigger
+    fun getShowPlayerTrigger(): LiveData<Track> = showPlayerTrigger
 
     private var lastSearchText: String? = null
     private var currentSearchText: String? = null
