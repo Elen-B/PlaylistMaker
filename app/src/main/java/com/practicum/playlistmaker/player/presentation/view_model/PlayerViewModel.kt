@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.player.presentation.view_model
 
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,6 +18,7 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
 
     private val stateLiveData = MutableLiveData<PlayerScreenState>()
     private val handler = Handler(Looper.getMainLooper())
+    private var currentTime: String? = null
 
     init {
         loadPlayer()
@@ -38,10 +38,14 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
     private fun renderState(state: PlayerScreenState) {
         stateLiveData.postValue(state)
     }
+
     private fun runTimerTask(): Runnable {
         return Runnable {
-            renderState(PlayerScreenState.Progress(getCurrentTime()))
-            handler.postDelayed(runTimerTask(), TIME_DEBOUNCE_DELAY)
+            currentTime = getCurrentTime()
+            if (stateLiveData.value is PlayerScreenState.Playing || stateLiveData.value is PlayerScreenState.Progress) {
+                handler.postDelayed(runTimerTask(), TIME_DEBOUNCE_DELAY)
+                renderState(PlayerScreenState.Progress(getCurrentTime()))
+            }
         }
     }
 
@@ -51,8 +55,8 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
     }
 
     private fun onPausePlayer() {
+        renderState(PlayerScreenState.Paused(currentTime))
         stopTimerTask()
-        renderState(PlayerScreenState.Paused())
     }
 
     private fun getCurrentTime() : String? = playerInteractor.getCurrentPosition(DEFAULT_TIME)
@@ -81,7 +85,6 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
         fun factory(track: Track): ViewModelProvider.Factory {
             return viewModelFactory {
                 initializer {
-                    Log.e("render", "initializer")
                     PlayerViewModel(track, Creator.providePlayerInteractorImpl())
                 }
             }

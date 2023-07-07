@@ -43,9 +43,9 @@ class PlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerReposit
 
     override fun pausePlayer(onPause: () -> Unit) {
         if (playerState != PlayerState.DEFAULT) {
+            onPause()
             mediaPlayerRepository.pause()
             playerState = PlayerState.PAUSED
-            onPause()
         }
     }
 
