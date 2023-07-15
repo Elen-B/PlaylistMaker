@@ -11,13 +11,6 @@ class SettingsActivity : AppCompatActivity() {
 
     private val viewModel: SettingsViewModel by viewModel()
 
-    /*private val viewModel: SettingsViewModel by lazy {
-        ViewModelProvider(
-            this,
-            SettingsViewModel.getViewModelFactory((applicationContext as App).appPreferences)
-        )[SettingsViewModel::class.java]
-    }*/
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater)
