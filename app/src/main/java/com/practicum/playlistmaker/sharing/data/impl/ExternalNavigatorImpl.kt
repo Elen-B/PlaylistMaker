@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.sharing.domain.models.Email
 import com.practicum.playlistmaker.sharing.domain.models.EmailData
 import com.practicum.playlistmaker.sharing.domain.models.UrlData
 
-class ExternalNavigatorImpl(val context: Context) : ExternalNavigator {
+class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
 
     override fun shareLink(url: UrlData) {
         try {
