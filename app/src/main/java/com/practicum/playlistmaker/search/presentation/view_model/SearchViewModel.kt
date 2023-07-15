@@ -52,16 +52,16 @@ class SearchViewModel(
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    private fun renderState(state: SearchScreenState) {
+    private fun setState(state: SearchScreenState) {
         stateLiveData.postValue(state)
     }
 
     private fun search(searchText: String) {
         if (searchText.isEmpty()) {
-            renderState(SearchScreenState.List(ArrayList()))
+            setState(SearchScreenState.List(ArrayList()))
             return
         }
-        renderState(SearchScreenState.Progress)
+        setState(SearchScreenState.Progress)
 
         trackInteractor.search(searchText, object : TrackInteractor.TrackConsumer {
             override fun consume(foundTracks: ArrayList<Track>?, errorMessage: String?) {
@@ -72,15 +72,15 @@ class SearchViewModel(
 
                 when {
                     errorMessage != null -> {
-                        renderState(SearchScreenState.Error)
+                        setState(SearchScreenState.Error)
                     }
 
                     tracks.isEmpty() -> {
-                        renderState(SearchScreenState.Empty)
+                        setState(SearchScreenState.Empty)
                     }
 
                     else -> {
-                        renderState(SearchScreenState.List(tracks = tracks))
+                        setState(SearchScreenState.List(tracks = tracks))
                     }
                 }
             }
@@ -97,10 +97,10 @@ class SearchViewModel(
         val tracks = getHistoryTrackList()
         if (hasFocus && currentSearchText?.isEmpty() == true && tracks.size > 0) {
             handler.removeCallbacks(searchRunnable)
-            renderState(SearchScreenState.History(tracks))
+            setState(SearchScreenState.History(tracks))
         } else {
             searchDebounce(currentSearchText ?: "")
-            renderState(
+            setState(
                 SearchScreenState.List(
                     if (stateLiveData.value is SearchScreenState.List) {
                         (stateLiveData.value as SearchScreenState.List).tracks
@@ -115,9 +115,9 @@ class SearchViewModel(
     fun onEditFocusChange(hasFocus: Boolean) {
         val tracks = getHistoryTrackList()
         if (hasFocus && currentSearchText.isNullOrEmpty() && tracks.size > 0) {
-            renderState(SearchScreenState.History(tracks))
+            setState(SearchScreenState.History(tracks))
         } else {
-            renderState(
+            setState(
                 SearchScreenState.List(
                     if (stateLiveData.value is SearchScreenState.List) {
                         (stateLiveData.value as SearchScreenState.List).tracks
@@ -131,7 +131,7 @@ class SearchViewModel(
 
     fun onClearSearchHistoryButtonClick() {
         clearHistoryTrackList()
-        renderState(SearchScreenState.List(ArrayList()))
+        setState(SearchScreenState.List(ArrayList()))
     }
 
     fun onEditorAction() {

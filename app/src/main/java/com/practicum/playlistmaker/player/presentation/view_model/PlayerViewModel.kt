@@ -26,16 +26,16 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
     fun observeState(): LiveData<PlayerScreenState> = stateLiveData
 
     private fun loadPlayer() {
-        renderState(PlayerScreenState.Default(track))
+        setState(PlayerScreenState.Default(track))
         playerInteractor.preparePlayer(track.previewUrl, {
-            renderState(PlayerScreenState.Prepared)
+            setState(PlayerScreenState.Prepared)
         }, {
-            renderState(PlayerScreenState.Paused(DEFAULT_TIME))
+            setState(PlayerScreenState.Paused(DEFAULT_TIME))
         }, {
 
         })
     }
-    private fun renderState(state: PlayerScreenState) {
+    private fun setState(state: PlayerScreenState) {
         stateLiveData.postValue(state)
     }
 
@@ -44,18 +44,18 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
             currentTime = getCurrentTime()
             if (stateLiveData.value is PlayerScreenState.Playing || stateLiveData.value is PlayerScreenState.Progress) {
                 handler.postDelayed(runTimerTask(), TIME_DEBOUNCE_DELAY)
-                renderState(PlayerScreenState.Progress(getCurrentTime()))
+                setState(PlayerScreenState.Progress(getCurrentTime()))
             }
         }
     }
 
     private fun onStartPlayer() {
-        renderState(PlayerScreenState.Playing())
+        setState(PlayerScreenState.Playing())
         handler.post(runTimerTask())
     }
 
     private fun onPausePlayer() {
-        renderState(PlayerScreenState.Paused(currentTime))
+        setState(PlayerScreenState.Paused(currentTime))
         stopTimerTask()
     }
 
