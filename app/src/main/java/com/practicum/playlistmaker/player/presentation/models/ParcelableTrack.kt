@@ -4,16 +4,17 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.Date
 
-data class ParcelableTrack(val trackId: Long?,
-                           val trackName: String?,
-                           val artistName: String?,
-                           val trackTime: String?,
-                           val artworkUrl100: String?,
-                           val albumName: String?,
-                           val releaseDate: Date?,
-                           val genreName: String?,
-                           val country: String?,
-                           val previewUrl: String?
+data class ParcelableTrack(
+    val trackId: Long?,
+    val trackName: String?,
+    val artistName: String?,
+    val trackTime: String?,
+    val artworkUrl100: String?,
+    val albumName: String?,
+    val releaseDate: Date?,
+    val genreName: String?,
+    val country: String?,
+    val previewUrl: String?
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readLong(),
