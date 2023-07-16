@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.di
 
 import android.content.Context
+import android.media.MediaPlayer
 import com.google.gson.Gson
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.network.ITunesApi
@@ -35,4 +36,6 @@ val dataModule = module {
     }
 
     factory { Gson() }
+
+    factory { MediaPlayer() }
 }
