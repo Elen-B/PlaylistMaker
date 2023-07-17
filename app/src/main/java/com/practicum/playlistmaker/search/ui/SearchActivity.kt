@@ -9,24 +9,19 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.player.ui.PlayerActivity
 import com.practicum.playlistmaker.search.presentation.models.SearchScreenState
 import com.practicum.playlistmaker.search.presentation.view_model.SearchViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity() {
-    private val viewModel: SearchViewModel by lazy {
-        ViewModelProvider(
-            this,
-            SearchViewModel.getViewModelFactory((applicationContext as App).appPreferences)
-        )[SearchViewModel::class.java]
-    }
     private lateinit var binding: ActivitySearchBinding
+
+    private val viewModel: SearchViewModel by viewModel()
 
     private var searchText: String? = ""
 

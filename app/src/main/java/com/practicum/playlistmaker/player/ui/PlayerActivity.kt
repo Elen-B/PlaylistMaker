@@ -5,9 +5,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -17,6 +17,8 @@ import com.practicum.playlistmaker.player.presentation.models.ParcelableTrack
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
+import org.koin.android.ext.android.getKoin
+import org.koin.core.parameter.parametersOf
 
 
 class PlayerActivity : AppCompatActivity() {
@@ -30,10 +32,8 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val track = getCurrentTrack()
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.factory(track)
-        )[PlayerViewModel::class.java]
+        Log.e("ff", track.toString())
+        viewModel = getKoin().get { parametersOf(track) }
 
         viewModel.observeState().observe(this) {
             render(it)
