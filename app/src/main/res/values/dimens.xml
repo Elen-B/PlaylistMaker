@@ -27,7 +27,10 @@
     <dimen name="medium_margin">16dp</dimen>
     <dimen name="large_margin">24dp</dimen>
     <dimen name="xlarge_margin">36dp</dimen>
+    <dimen name="xxlarge_margin">44dp</dimen>
+    <dimen name="mega_margin">104dp</dimen>
     <dimen name="small_album_round_corners">2dp</dimen>
     <dimen name="large_album_round_corners">8dp</dimen>
     <dimen name="progress_bar_size">44dp</dimen>
+    <dimen name="tab_padding">40dp</dimen>
 </resources>

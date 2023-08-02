@@ -1,9 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/VerticalMainLayoutStyle"
     tools:context=".media.ui.MediaActivity"
-    android:background="@color/white">
+    android:background="?attr/colorPrimary">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        style="@style/HorizontalItemLayoutStyle">
+
+        <ImageButton
+            android:id="@+id/btMediaBack"
+            style="@style/BackImageButtonStyle"
+            android:contentDescription="@string/button_back"
+            tools:ignore="ImageContrastCheck" />
+
+        <TextView
+            style="@style/HeaderItemMenuTextStyle"
+            android:text="@string/button_media"/>
+    </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        style="@style/mediaTabLayout"
+        android:id="@+id/mediaTabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/mediaViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>
