@@ -125,7 +125,6 @@
     <style name="PlaceHolderTextViewStyle">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-
         <item name="android:gravity">center</item>
         <item name="android:drawablePadding">@dimen/drawable_padding_20</item>
         <item name="fontFamily">@font/ys_display_medium</item>
@@ -194,6 +193,11 @@
 
     <style name="RetryButtonStyle" parent="RoundedButtonStyle">
         <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="NewPlaylistStyle" parent="RoundedButtonStyle">
+        <item name="android:layout_gravity">center</item>
+        <item name="maxHeight">36dp</item>
     </style>
 
     <style name="ClearHistoryButtonStyle" parent="RoundedButtonStyle">
@@ -278,5 +282,21 @@
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:textSize">@dimen/small_text_size</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
+    </style>
+    
+    <style name="mediaTabLayout" parent="Widget.Design.TabLayout">
+        <item name="android:layout_marginStart">@dimen/medium_margin</item>
+        <item name="android:layout_marginEnd">@dimen/medium_margin</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="tabRippleColor">?attr/colorOnPrimary</item>
+        <item name="tabIndicatorColor">?attr/colorOnPrimary</item>
+        <item name="tabTextAppearance">@style/mediaTabTextAppearance</item>
+    </style>
+
+    <style name="mediaTabTextAppearance">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:textSize">@dimen/regular_text_size</item>
     </style>
 </resources>
