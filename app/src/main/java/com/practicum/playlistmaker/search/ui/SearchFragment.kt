@@ -1,25 +1,29 @@
 package com.practicum.playlistmaker.search.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.PlayerActivity
+import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.presentation.models.SearchScreenState
 import com.practicum.playlistmaker.search.presentation.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.practicum.playlistmaker.R
 
-
-class SearchActivity : AppCompatActivity() {
-    private lateinit var binding: ActivitySearchBinding
+class SearchFragment: Fragment() {
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: SearchViewModel by viewModel()
 
@@ -39,22 +43,24 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("ServiceCast")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        viewModel.observeState().observe(this) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
         }
 
-        viewModel.getShowPlayerTrigger().observe(this) {
+        viewModel.getShowPlayerTrigger().observe(viewLifecycleOwner) {
             showPlayerActivity(it)
-        }
-
-        binding.btSearchBack.setOnClickListener {
-            finish()
         }
 
         binding.btClearSearch.setOnClickListener {
@@ -98,10 +104,10 @@ class SearchActivity : AppCompatActivity() {
             viewModel.onClearSearchHistoryButtonClick()
         }
 
-        binding.trackList.layoutManager = LinearLayoutManager(this)
+        binding.trackList.layoutManager = LinearLayoutManager(requireContext())
         binding.trackList.adapter = trackAdapter
 
-        val mLayoutManager = LinearLayoutManager(this)
+        val mLayoutManager = LinearLayoutManager(requireContext())
         mLayoutManager.reverseLayout = true
         binding.searchHistory.SearchList.layoutManager = mLayoutManager
         binding.searchHistory.SearchList.adapter = historyAdapter
@@ -112,16 +118,16 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(SEARCH_TEXT, searchText)
     }
 
-    override fun onRestoreInstanceState(
-        savedInstanceState: Bundle
-    ) {
-        super.onRestoreInstanceState(savedInstanceState)
-        binding.edSearch.setText(savedInstanceState.getString(SEARCH_TEXT))
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        binding.edSearch.setText(savedInstanceState?.getString(SEARCH_TEXT))
         binding.edSearch.setSelection(binding.edSearch.text.length)
     }
 
     private fun showPlayerActivity(track: Track) {
-        PlayerActivity.show(this, track)
+        //PlayerActivity.show(requireContext(), track)
+        findNavController().navigate(R.id.action_searchFragment_to_playerActivity,
+            PlayerActivity.createArgs(track))
     }
 
     private fun render(state: SearchScreenState) {

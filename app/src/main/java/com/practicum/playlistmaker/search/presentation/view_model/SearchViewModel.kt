@@ -110,6 +110,7 @@ class SearchViewModel(
     fun onEditFocusChange(hasFocus: Boolean) {
         val tracks = getHistoryTrackList()
         if (hasFocus && currentSearchText.isNullOrEmpty() && tracks.size > 0) {
+            handler.removeCallbacks(searchRunnable)
             setState(SearchScreenState.History(tracks))
         } else {
             setState(

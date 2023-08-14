@@ -1,12 +1,10 @@
 package com.practicum.playlistmaker.player.ui
 
-import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -32,7 +30,6 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val track = getCurrentTrack()
-        Log.e("ff", track.toString())
         viewModel = getKoin().get { parametersOf(track) }
 
         viewModel.observeState().observe(this) {
@@ -128,11 +125,7 @@ class PlayerActivity : AppCompatActivity() {
         private const val GREY_IMAGE_ALPHA_CHANNEL = 75
         private const val WHITE_IMAGE_ALPHA_CHANNEL = 255
 
-        fun show(context: Context, track: Track) {
-            val intent = Intent(context, PlayerActivity::class.java)
-            intent.putExtra(TRACK, ParcelableTrackMapper.map(track))
-
-            context.startActivity(intent)
-        }
+        fun createArgs(track: Track): Bundle =
+            bundleOf(TRACK to ParcelableTrackMapper.map(track))
     }
 }
