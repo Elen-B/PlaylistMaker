@@ -9,13 +9,12 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityRootBinding
 
 class RootActivity : AppCompatActivity() {
-    private var _binding: ActivityRootBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: ActivityRootBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        _binding = ActivityRootBinding.inflate(layoutInflater)
+        binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment

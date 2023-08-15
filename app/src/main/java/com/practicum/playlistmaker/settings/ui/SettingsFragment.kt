@@ -10,8 +10,7 @@ import com.practicum.playlistmaker.settings.presentation.view_model.SettingsView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsFragment: Fragment() {
-    private var _binding: FragmentSettingsBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSettingsBinding
 
     private val viewModel: SettingsViewModel by viewModel()
 
@@ -20,7 +19,7 @@ class SettingsFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 

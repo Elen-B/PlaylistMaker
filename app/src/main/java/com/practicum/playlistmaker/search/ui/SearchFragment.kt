@@ -22,8 +22,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.practicum.playlistmaker.R
 
 class SearchFragment: Fragment() {
-    private var _binding: FragmentSearchBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSearchBinding
 
     private val viewModel: SearchViewModel by viewModel()
 
@@ -48,7 +47,7 @@ class SearchFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -125,7 +124,6 @@ class SearchFragment: Fragment() {
     }
 
     private fun showPlayerActivity(track: Track) {
-        //PlayerActivity.show(requireContext(), track)
         findNavController().navigate(R.id.action_searchFragment_to_playerActivity,
             PlayerActivity.createArgs(track))
     }

@@ -10,8 +10,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentMediaBinding
 
 class MediaFragment: Fragment() {
-    private var _binding: FragmentMediaBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentMediaBinding
 
     private lateinit var tabMediator: TabLayoutMediator
 
@@ -20,7 +19,7 @@ class MediaFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMediaBinding.inflate(inflater, container, false)
+        binding = FragmentMediaBinding.inflate(inflater, container, false)
         return binding.root
     }
 
