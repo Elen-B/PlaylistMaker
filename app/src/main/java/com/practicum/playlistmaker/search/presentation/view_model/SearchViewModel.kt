@@ -10,6 +10,7 @@ import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.presentation.models.SearchScreenState
 import com.practicum.playlistmaker.search.presentation.utils.SingleEventLiveData
 import com.practicum.playlistmaker.utils.debounce
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val trackInteractor: TrackInteractor,
@@ -57,28 +58,30 @@ class SearchViewModel(
         }
         setState(SearchScreenState.Progress)
 
-        trackInteractor.search(searchText, object : TrackInteractor.TrackConsumer {
-            override fun consume(foundTracks: ArrayList<Track>?, errorMessage: String?) {
-                val tracks = ArrayList<Track>()
-                if (foundTracks != null) {
-                    tracks.addAll(foundTracks)
+        viewModelScope.launch {
+            trackInteractor
+                .search(searchText)
+                .collect {
+                    val tracks = ArrayList<Track>()
+                    if (it.first != null) {
+                        tracks.addAll(it.first!!)
+                    }
+
+                    when {
+                        it.second != null -> {
+                            setState(SearchScreenState.Error)
+                        }
+
+                        tracks.isEmpty() -> {
+                            setState(SearchScreenState.Empty)
+                        }
+
+                        else -> {
+                            setState(SearchScreenState.List(tracks = tracks))
+                        }
+                    }
                 }
-
-                when {
-                    errorMessage != null -> {
-                        setState(SearchScreenState.Error)
-                    }
-
-                    tracks.isEmpty() -> {
-                        setState(SearchScreenState.Empty)
-                    }
-
-                    else -> {
-                        setState(SearchScreenState.List(tracks = tracks))
-                    }
-                }
-            }
-        })
+        }
     }
 
 
