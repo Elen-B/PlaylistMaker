@@ -33,4 +33,5 @@
     <dimen name="large_album_round_corners">8dp</dimen>
     <dimen name="progress_bar_size">44dp</dimen>
     <dimen name="tab_padding">40dp</dimen>
+    <dimen name="thin_line">1dp</dimen>
 </resources>

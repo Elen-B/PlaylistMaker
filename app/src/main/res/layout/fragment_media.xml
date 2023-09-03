@@ -2,17 +2,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/VerticalMainLayoutStyle"
-    tools:context=".media.ui.MediaActivity"
-    android:background="?attr/colorPrimary">
+    android:background="?attr/colorPrimary"
+    tools:context=".media.ui.MediaFragment">
 
     <LinearLayout
         style="@style/HorizontalItemLayoutStyle">
-
-        <ImageButton
-            android:id="@+id/btMediaBack"
-            style="@style/BackImageButtonStyle"
-            android:contentDescription="@string/button_back"
-            tools:ignore="ImageContrastCheck" />
 
         <TextView
             style="@style/HeaderItemMenuTextStyle"

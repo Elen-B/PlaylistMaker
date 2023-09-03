@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".search.ui.SearchActivity"
     style="@style/VerticalMainLayoutStyle"
-    android:background="?attr/colorPrimary">
+    android:background="?attr/colorPrimary"
+    tools:context=".search.ui.SearchFragment">
 
     <LinearLayout
         style="@style/HorizontalItemLayoutStyle">
-
-        <ImageButton
-            android:id="@+id/btSearchBack"
-            style="@style/BackImageButtonStyle"
-            android:contentDescription="@string/button_back"
-            tools:ignore="ImageContrastCheck" />
 
         <TextView
             style="@style/HeaderItemMenuTextStyle"
@@ -20,8 +14,7 @@
     </LinearLayout>
 
     <FrameLayout
-        style="@style/HorizontalItemLayoutStyle"
-        android:layout_margin="@dimen/layout_padding">
+        style="@style/HorizontalItemLayoutStyle">
 
         <EditText
             android:id="@+id/edSearch"

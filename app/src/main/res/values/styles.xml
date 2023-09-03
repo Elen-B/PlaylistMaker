@@ -10,6 +10,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">horizontal</item>
+        <item name="android:padding">@dimen/medium_margin</item>
     </style>
 
     <style name="TrackItemLayoutStyle">
@@ -37,7 +38,6 @@
     <style name="HeaderItemMenuTextStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_marginStart">8dp</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textSize">@dimen/primary_text_size</item>
@@ -298,5 +298,11 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">?attr/colorOnPrimary</item>
         <item name="android:textSize">@dimen/regular_text_size</item>
+    </style>
+
+    <style name="navigationItemTextAppearance">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
     </style>
 </resources>
