@@ -8,7 +8,7 @@ import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.presentation.models.SearchScreenState
-import com.practicum.playlistmaker.search.presentation.utils.SingleEventLiveData
+import com.practicum.playlistmaker.utils.SingleEventLiveData
 import com.practicum.playlistmaker.utils.debounce
 import kotlinx.coroutines.launch
 
@@ -143,12 +143,17 @@ class SearchViewModel(
     }
 
     fun addTrackToSearchHistory(track: Track) {
-        historyInteractor.addTrackToSearchHistory(track)
+        viewModelScope.launch {
+            historyInteractor.addTrackToSearchHistory(track)
+        }
+
     }
 
     private fun getHistoryTrackList(): ArrayList<Track> {
         return historyInteractor.getSearchHistory()
     }
+
+
 
     private fun clearHistoryTrackList() {
         historyInteractor.clearSearchHistory()

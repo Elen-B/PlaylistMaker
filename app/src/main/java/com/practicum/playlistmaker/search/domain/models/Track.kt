@@ -1,9 +1,5 @@
 package com.practicum.playlistmaker.search.domain.models
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
 data class Track(
     val trackId: Long?,
     val trackName: String?,
@@ -11,13 +7,11 @@ data class Track(
     val trackTime: String?,
     val artworkUrl100: String?,
     val albumName: String?,
-    val releaseDate: Date?,
+    val releaseYear: Int?,
     val genreName: String?,
     val country: String?,
-    val previewUrl: String?
+    val previewUrl: String?,
+    var isFavourite: Boolean = false,
 ) {
     fun getCoverArtwork() = artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
-    fun getReleaseYear(): String =
-        SimpleDateFormat("yyyy", Locale.getDefault()).format(releaseDate!!).orEmpty()
-
 }

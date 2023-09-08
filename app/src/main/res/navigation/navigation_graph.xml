@@ -24,9 +24,17 @@
         android:id="@+id/mediaFragment"
         android:name="com.practicum.playlistmaker.media.ui.MediaFragment"
         android:label="fragment_media"
-        tools:layout="@layout/fragment_media" />
+        tools:layout="@layout/fragment_media" >
+        <action
+            android:id="@+id/action_mediaFragment_to_playerActivity"
+            app:destination="@id/playerActivity" />
+    </fragment>
     <activity
         android:id="@+id/playerActivity"
         android:name="com.practicum.playlistmaker.player.ui.PlayerActivity"
         android:label="PlayerActivity" />
+    <fragment
+        android:id="@+id/favouritesFragment"
+        android:name="com.practicum.playlistmaker.media.ui.FavouritesFragment"
+        android:label="FavouritesFragment" />
 </navigation>

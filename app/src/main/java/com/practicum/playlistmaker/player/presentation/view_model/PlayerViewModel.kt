@@ -4,25 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.media.domain.api.MediaInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
+import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class PlayerViewModel(private val track: Track, private val playerInteractor: PlayerInteractor) :
+class PlayerViewModel(
+    private val track: Track,
+    private val playerInteractor: PlayerInteractor,
+    private val mediaInteractor: MediaInteractor,
+    private val historyInteractor: HistoryInteractor,
+) :
     ViewModel() {
 
     private val stateLiveData = MutableLiveData<PlayerScreenState>()
+    fun observeState(): LiveData<PlayerScreenState> = stateLiveData
+
+    private val favouriteLiveData = MutableLiveData<Boolean>()
+    fun observeFavourite(): LiveData<Boolean> = favouriteLiveData
+
     private var currentTime: String? = null
     private var timerJob: Job? = null
 
     init {
         loadPlayer()
+        setFavourite(track.isFavourite)
     }
-
-    fun observeState(): LiveData<PlayerScreenState> = stateLiveData
 
     private fun loadPlayer() {
         setState(PlayerScreenState.Default(track))
@@ -37,6 +48,10 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
 
     private fun setState(state: PlayerScreenState) {
         stateLiveData.value = state
+    }
+
+    private fun setFavourite(isFavourite: Boolean) {
+        favouriteLiveData.value = isFavourite
     }
 
     private fun startTimer() {
@@ -67,6 +82,31 @@ class PlayerViewModel(private val track: Track, private val playerInteractor: Pl
 
     fun pausePlayer() {
         playerInteractor.pausePlayer { onPausePlayer() }
+    }
+
+    private fun saveFavouriteTrack() {
+        viewModelScope.launch {
+            mediaInteractor.saveFavouriteTrack(track)
+        }
+    }
+
+    private fun deleteFavouriteTrack() {
+        viewModelScope.launch {
+            mediaInteractor.deleteFavouriteTrack(track.trackId!!)
+        }
+    }
+
+    fun onLikeTrackClick() {
+        track.isFavourite = !track.isFavourite
+        setFavourite(track.isFavourite)
+        if (track.isFavourite) {
+            saveFavouriteTrack()
+        } else {
+            deleteFavouriteTrack()
+        }
+        viewModelScope.launch{
+            historyInteractor.addTrackToSearchHistory(track)
+        }
     }
 
     override fun onCleared() {

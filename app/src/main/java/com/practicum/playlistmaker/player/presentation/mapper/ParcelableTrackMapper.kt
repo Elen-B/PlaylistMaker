@@ -13,10 +13,11 @@ object ParcelableTrackMapper {
             trackTime = track.trackTime,
             artworkUrl100 = track.artworkUrl100,
             albumName = track.albumName,
-            releaseDate = track.releaseDate,
+            releaseYear = track.releaseYear,
             genreName = track.genreName,
             country = track.country,
-            previewUrl = track.previewUrl
+            previewUrl = track.previewUrl,
+            isFavourite = track.isFavourite
         )
     }
 
@@ -28,10 +29,11 @@ object ParcelableTrackMapper {
             trackTime = track.trackTime,
             artworkUrl100 = track.artworkUrl100,
             albumName = track.albumName,
-            releaseDate = track.releaseDate,
+            releaseYear = track.releaseYear,
             genreName = track.genreName,
             country = track.country,
-            previewUrl = track.previewUrl
+            previewUrl = track.previewUrl,
+            isFavourite = track.isFavourite
         )
     }
 }

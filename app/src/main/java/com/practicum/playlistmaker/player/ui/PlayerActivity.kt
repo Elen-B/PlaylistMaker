@@ -36,6 +36,10 @@ class PlayerActivity : AppCompatActivity() {
             render(it)
         }
 
+        viewModel.observeFavourite().observe(this) {
+            renderFavourite(it)
+        }
+
         init(track)
 
         binding.btPlayerBack.setOnClickListener {
@@ -44,6 +48,10 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.playerPlayTrack.setOnClickListener {
             viewModel.playBackControl()
+        }
+
+        binding.playerLikeTrack.setOnClickListener {
+            viewModel.onLikeTrackClick()
         }
     }
 
@@ -60,6 +68,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         return ParcelableTrackMapper.map(track ?: ParcelableTrack())
     }
+
     private fun render(state: PlayerScreenState) {
         when (state) {
             is PlayerScreenState.Default -> onGetDefaultState()
@@ -76,7 +85,7 @@ class PlayerActivity : AppCompatActivity() {
         binding.playerTrackTimeInfo.text = track.trackTime.orEmpty()
         binding.playerAlbumInfo.text = track.albumName.orEmpty()
         binding.playerCountryInfo.text = track.country.orEmpty()
-        binding.playerTrackYearInfo.text = track.getReleaseYear()
+        binding.playerTrackYearInfo.text = track.releaseYear.toString()
         binding.playerGenreInfo.text = track.genreName.orEmpty()
         Glide.with(this)
             .load(track.getCoverArtwork())
@@ -120,6 +129,15 @@ class PlayerActivity : AppCompatActivity() {
         setTime(time)
         binding.playerPlayTrack.setImageResource(R.drawable.ic_play_track)
     }
+
+    private fun renderFavourite(isFavourite: Boolean) {
+        if (isFavourite) {
+            binding.playerLikeTrack.setImageResource(R.drawable.ic_like_track_checked)
+        } else {
+            binding.playerLikeTrack.setImageResource(R.drawable.ic_like_track)
+        }
+    }
+
     companion object {
         const val TRACK = "Track"
         private const val GREY_IMAGE_ALPHA_CHANNEL = 75
