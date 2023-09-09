@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.ui
+package com.practicum.playlistmaker.search.presentation.ui
 
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -11,7 +11,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.search.domain.models.Track
 
-class FavouritesViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
+class TrackViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
         .inflate(R.layout.track_view, parentView, false)
 ) {
@@ -31,10 +31,8 @@ class FavouritesViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
             .load(model.artworkUrl100)
             .placeholder(R.drawable.ic_track)
             .centerCrop()
-            .transform(
-                RoundedCorners((itemView.resources.getDimension(R.dimen.small_album_round_corners) * (itemView.resources
-                .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt())
-            )
+            .transform(RoundedCorners((itemView.resources.getDimension(R.dimen.small_album_round_corners) * (itemView.resources
+                .displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)).toInt()))
             .into(trackImageView)
     }
 }

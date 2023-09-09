@@ -6,14 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.media.domain.api.MediaInteractor
+import com.practicum.playlistmaker.media.domain.api.FavouritesInteractor
 import com.practicum.playlistmaker.media.presentation.models.FavouritesScreenState
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.SingleEventLiveData
 import com.practicum.playlistmaker.utils.debounce
 import kotlinx.coroutines.launch
 
-class FavouritesViewModel(private val mediaInteractor: MediaInteractor) : ViewModel(),
+class FavouritesViewModel(private val favouritesInteractor: FavouritesInteractor) : ViewModel(),
     DefaultLifecycleObserver {
 
     private val stateLiveData = MutableLiveData<FavouritesScreenState>()
@@ -40,7 +40,7 @@ class FavouritesViewModel(private val mediaInteractor: MediaInteractor) : ViewMo
     private fun loadContent() {
         setState(FavouritesScreenState.Loading)
         viewModelScope.launch {
-            mediaInteractor
+            favouritesInteractor
                 .getFavouriteTracks()
                 .collect {
                     processResult(it)

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.media.domain.api.MediaInteractor
+import com.practicum.playlistmaker.media.domain.api.FavouritesInteractor
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
@@ -16,7 +16,7 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(
     private val track: Track,
     private val playerInteractor: PlayerInteractor,
-    private val mediaInteractor: MediaInteractor,
+    private val favouritesInteractor: FavouritesInteractor,
     private val historyInteractor: HistoryInteractor,
 ) :
     ViewModel() {
@@ -33,7 +33,7 @@ class PlayerViewModel(
     init {
         loadPlayer()
         viewModelScope.launch {
-            track.isFavourite = mediaInteractor.getFavouriteState(track.trackId ?: 0)
+            track.isFavourite = favouritesInteractor.getFavouriteState(track.trackId ?: 0)
             setFavourite(track.isFavourite)
         }
 
@@ -90,13 +90,13 @@ class PlayerViewModel(
 
     private fun saveFavouriteTrack() {
         viewModelScope.launch {
-            mediaInteractor.saveFavouriteTrack(track)
+            favouritesInteractor.saveFavouriteTrack(track)
         }
     }
 
     private fun deleteFavouriteTrack() {
         viewModelScope.launch {
-            mediaInteractor.deleteFavouriteTrack(track.trackId!!)
+            favouritesInteractor.deleteFavouriteTrack(track.trackId!!)
         }
     }
 

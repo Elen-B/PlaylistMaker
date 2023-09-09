@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.ui
+package com.practicum.playlistmaker.media.presentation.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentFavouritesBinding
 import com.practicum.playlistmaker.media.presentation.models.FavouritesScreenState
 import com.practicum.playlistmaker.media.presentation.view_model.FavouritesViewModel
-import com.practicum.playlistmaker.player.ui.PlayerActivity
+import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

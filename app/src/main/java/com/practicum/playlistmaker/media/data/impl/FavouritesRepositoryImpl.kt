@@ -3,15 +3,15 @@ package com.practicum.playlistmaker.media.data.impl
 import com.practicum.playlistmaker.media.data.AppDatabase
 import com.practicum.playlistmaker.media.data.entity.TrackEntity
 import com.practicum.playlistmaker.media.data.mapper.TrackDbMapper
-import com.practicum.playlistmaker.media.domain.api.MediaRepository
+import com.practicum.playlistmaker.media.domain.api.FavouritesRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class MediaRepositoryImpl(
+class FavouritesRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val trackDbMapper: TrackDbMapper,
-) : MediaRepository {
+) : FavouritesRepository {
 
     override fun getFavouriteTracks(): Flow<List<Track>> = flow {
         val tracks = appDatabase.trackDao().getTracks()
