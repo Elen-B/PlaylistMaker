@@ -10,4 +10,6 @@ interface MediaInteractor {
     suspend fun saveFavouriteTrack(track: Track)
 
     suspend fun deleteFavouriteTrack(trackId: Long)
+
+    suspend fun getFavouriteState(trackId: Long): Boolean
 }

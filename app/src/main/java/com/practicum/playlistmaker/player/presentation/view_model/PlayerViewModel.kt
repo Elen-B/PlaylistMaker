@@ -32,7 +32,11 @@ class PlayerViewModel(
 
     init {
         loadPlayer()
-        setFavourite(track.isFavourite)
+        viewModelScope.launch {
+            track.isFavourite = mediaInteractor.getFavouriteState(track.trackId ?: 0)
+            setFavourite(track.isFavourite)
+        }
+
     }
 
     private fun loadPlayer() {

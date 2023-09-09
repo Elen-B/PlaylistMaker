@@ -18,6 +18,10 @@ class MediaRepositoryImpl(
         emit(mapFromTrackEntity(tracks))
     }
 
+    override suspend fun getFavouriteState(trackId: Long): Boolean {
+        return appDatabase.trackDao().getTrackIds().indexOf(trackId) > -1
+    }
+
     override suspend fun saveFavouriteTrack(track: Track) {
         val trackEntity = trackDbMapper.map(track)
         appDatabase.trackDao().insertTrack(trackEntity)

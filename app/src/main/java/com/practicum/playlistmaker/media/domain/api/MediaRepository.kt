@@ -7,6 +7,8 @@ interface MediaRepository {
 
     fun getFavouriteTracks(): Flow<List<Track>>
 
+    suspend fun getFavouriteState(trackId: Long): Boolean
+
     suspend fun saveFavouriteTrack(track: Track)
 
     suspend fun deleteFavouriteTrack(trackId: Long)

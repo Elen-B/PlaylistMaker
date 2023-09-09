@@ -17,4 +17,8 @@ class MediaInteractorImpl(private val mediaRepository: MediaRepository): MediaIn
     override suspend fun deleteFavouriteTrack(trackId: Long) {
         mediaRepository.deleteFavouriteTrack(trackId)
     }
+
+    override suspend fun getFavouriteState(trackId: Long): Boolean {
+        return mediaRepository.getFavouriteState(trackId)
+    }
 }

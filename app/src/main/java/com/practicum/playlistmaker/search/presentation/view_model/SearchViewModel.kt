@@ -146,14 +146,11 @@ class SearchViewModel(
         viewModelScope.launch {
             historyInteractor.addTrackToSearchHistory(track)
         }
-
     }
 
     private fun getHistoryTrackList(): ArrayList<Track> {
         return historyInteractor.getSearchHistory()
     }
-
-
 
     private fun clearHistoryTrackList() {
         historyInteractor.clearSearchHistory()
