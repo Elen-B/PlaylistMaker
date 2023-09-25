@@ -1,28 +1,28 @@
-package com.practicum.playlistmaker.search.ui
+package com.practicum.playlistmaker.media.presentation.ui
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.search.domain.models.Track
 
-class TrackAdapter(private var items: ArrayList<Track>) : RecyclerView.Adapter<TrackViewHolder>() {
+class FavouritesAdapter(private var items: ArrayList<Track>) : RecyclerView.Adapter<FavouritesViewHolder>() {
     var clickListener: TrackClickListener? = null
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        return TrackViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavouritesViewHolder {
+        return FavouritesViewHolder(parent)
     }
 
     override fun getItemCount(): Int {
         return items.size
     }
 
-    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FavouritesViewHolder, position: Int) {
         val track = items[position]
         holder.bind(track)
         holder.itemView.setOnClickListener{clickListener?.onTrackClick(track)}
     }
 
-    fun addItems(values: ArrayList<Track>) {
+    fun addItems(values: List<Track>) {
         this.items.clear()
-        if (values.size > 0) {
+        if (values.isNotEmpty()) {
             this.items.addAll(values)
         }
         this.notifyDataSetChanged()

@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:context=".player.ui.PlayerActivity">
+        tools:context=".player.presentation.ui.PlayerActivity">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/playerLeftGuideLine24"
@@ -82,6 +82,7 @@
             android:id="@+id/playerLikeTrack"
             style="@style/PlayerImageButton"
             android:background="@drawable/bg_round_grey_button"
+            android:backgroundTint="?attr/colorOnPrimary"
             android:src="@drawable/ic_like_track"
             android:contentDescription="@string/player_description_like"
             app:layout_constraintTop_toTopOf="@id/playerPlayTrack"

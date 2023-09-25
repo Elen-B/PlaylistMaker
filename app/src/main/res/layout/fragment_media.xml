@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/VerticalMainLayoutStyle"
     android:background="?attr/colorPrimary"
-    tools:context=".media.ui.MediaFragment">
+    tools:context=".media.presentation.ui.MediaFragment">
 
     <LinearLayout
         style="@style/HorizontalItemLayoutStyle">

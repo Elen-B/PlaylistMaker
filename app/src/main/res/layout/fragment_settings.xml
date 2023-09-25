@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/VerticalMainLayoutStyle"
     android:background="?attr/colorPrimary"
-    tools:context=".settings.ui.SettingsFragment">
+    tools:context=".settings.presentation.ui.SettingsFragment">
 
     <LinearLayout
         style="@style/HorizontalItemLayoutStyle">

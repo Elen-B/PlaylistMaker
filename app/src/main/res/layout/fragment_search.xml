@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/VerticalMainLayoutStyle"
     android:background="?attr/colorPrimary"
-    tools:context=".search.ui.SearchFragment">
+    tools:context=".search.presentation.ui.SearchFragment">
 
     <LinearLayout
         style="@style/HorizontalItemLayoutStyle">
