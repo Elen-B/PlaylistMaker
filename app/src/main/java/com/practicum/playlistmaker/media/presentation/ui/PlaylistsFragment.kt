@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.media.presentation.models.PlaylistsScreenState
 import com.practicum.playlistmaker.media.presentation.view_model.PlaylistsViewModel
@@ -30,6 +32,10 @@ class PlaylistsFragment: Fragment() {
 
         playlistsViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
+        }
+
+        binding.playlistsEmpty.btNewPlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaFragment_to_playlistFragment)
         }
     }
 

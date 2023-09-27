@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_mediaFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
+        <action
+            android:id="@+id/action_mediaFragment_to_playlistFragment"
+            app:destination="@id/playlistFragment" />
     </fragment>
     <activity
         android:id="@+id/playerActivity"
@@ -36,5 +39,16 @@
     <fragment
         android:id="@+id/favouritesFragment"
         android:name="com.practicum.playlistmaker.media.presentation.ui.FavouritesFragment"
-        android:label="FavouritesFragment" />
+        android:label="FavouritesFragment"
+        tools:layout="@layout/fragment_favourites"/>
+    <fragment
+        android:id="@+id/playlistsFragment"
+        android:name="com.practicum.playlistmaker.media.presentation.ui.PlaylistsFragment"
+        android:label="PlaylistsFragment"
+        tools:layout="@layout/fragment_playlists"/>
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.practicum.playlistmaker.media.presentation.ui.PlaylistFragment"
+        android:label="PlaylistFragment"
+        tools:layout="@layout/fragment_playlist"/>
 </navigation>

@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.practicum.playlistmaker.media.presentation.models.PlaylistsScreenState
 
-class PlaylistsViewModel() : ViewModel() {
+class PlaylistsViewModel : ViewModel() {
     private val stateLiveData = MutableLiveData<PlaylistsScreenState>()
     fun observeState(): LiveData<PlaylistsScreenState> = stateLiveData
 
