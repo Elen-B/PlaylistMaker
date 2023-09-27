@@ -15,4 +15,15 @@ class PlaylistDbMapper {
             trackCount = playlist.trackCount
         )
     }
+
+    fun map(playlistEntity: PlaylistEntity): Playlist {
+        return Playlist(
+            id = playlistEntity.id,
+            name = playlistEntity.name,
+            description = playlistEntity.description,
+            filePath = playlistEntity.filePath,
+            trackList = playlistEntity.trackList,
+            trackCount = playlistEntity.trackCount
+        )
+    }
 }

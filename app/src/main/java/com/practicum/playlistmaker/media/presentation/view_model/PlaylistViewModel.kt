@@ -63,9 +63,8 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
         }
     }
 
-    fun needShowDialog() : Boolean {
-        val result = stateLiveData.value is PlaylistScreenState.Filled || stateLiveData.value is PlaylistScreenState.NotEmpty
-        return result
+    fun needShowDialog(): Boolean {
+        return stateLiveData.value is PlaylistScreenState.Filled || stateLiveData.value is PlaylistScreenState.NotEmpty
     }
 
 

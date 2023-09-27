@@ -3,10 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <ProgressBar android:id="@+id/progressBar"
+        android:layout_width="@dimen/progress_bar_size"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/blue"
+        android:visibility="gone"/>
+
     <include
         layout="@layout/ph_playlists_empty_view"
         android:id="@+id/playlistsEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
+    <include
+        layout="@layout/playlist_grid_view"
+        android:id="@+id/playlistsGridView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/medium_margin"
         android:visibility="visible"/>
 </FrameLayout>
