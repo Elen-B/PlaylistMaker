@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media.domain.api.PlaylistInteractor
 import com.practicum.playlistmaker.media.domain.models.Playlist
+import com.practicum.playlistmaker.media.presentation.models.PlaylistScreenResult
 import com.practicum.playlistmaker.media.presentation.models.PlaylistScreenState
 import com.practicum.playlistmaker.utils.SingleEventLiveData
 import com.practicum.playlistmaker.utils.debounce
@@ -19,6 +20,9 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
     private val stateLiveData = MutableLiveData<PlaylistScreenState>()
     fun observeState(): LiveData<PlaylistScreenState> = stateLiveData
 
+    private val resultLiveData = MutableLiveData<PlaylistScreenResult>()
+    fun observeResult(): LiveData<PlaylistScreenResult> = resultLiveData
+
     private val addPlaylistTrigger = SingleEventLiveData<Playlist>()
     fun getAddPlaylistTrigger(): LiveData<Playlist> = addPlaylistTrigger
 
@@ -30,10 +34,15 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
 
     init {
         setState(PlaylistScreenState.Empty)
+        setResult(PlaylistScreenResult.None)
     }
 
     private fun setState(state: PlaylistScreenState) {
         stateLiveData.postValue(state)
+    }
+
+    private fun setResult(result: PlaylistScreenResult) {
+        resultLiveData.postValue(result)
     }
 
     private fun setCurrentState() {
@@ -51,9 +60,16 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
         }
     }
 
-    fun addPlaylist(playlist: Playlist) {
+    fun addPlaylist(aPlaylist: Playlist) {
         viewModelScope.launch {
-            playlistInteractor.addPlaylist(playlist = playlist)
+            try {
+                val  res = playlistInteractor.addPlaylist(playlist = aPlaylist)
+                playlist.id = res
+                setResult(PlaylistScreenResult.Created(playlist))
+            } catch (e: Exception) {
+                setResult(PlaylistScreenResult.Canceled)
+            }
+
         }
     }
 
@@ -66,7 +82,6 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
     fun needShowDialog(): Boolean {
         return stateLiveData.value is PlaylistScreenState.Filled || stateLiveData.value is PlaylistScreenState.NotEmpty
     }
-
 
     fun onPlaylistNameChanged(text: String?) {
         playlist.name = text
@@ -85,6 +100,10 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
             playlist.filePath = "pl" + Random.nextInt() + ".jpg"
         }
         setCurrentState()
+    }
+
+    fun onCancelPlaylist() {
+        setResult(PlaylistScreenResult.Canceled)
     }
 
     private fun clickDebounce(): Boolean {

@@ -34,6 +34,10 @@
     <string name="label_playlist_name">Название*</string>
     <string name="label_playlist_description">Описание</string>
     <string name="button_create_playlist">Создать</string>
+    <string name="title_playlist_bottom_sheet">Добавить в плейлист</string>
+    <string name="add_status_added">Добавлено в плейлист %s</string>
+    <string name="add_status_exist">Трек уже добавлен в плейлист %s</string>
+    <string name="add_status_error">Ошибка добавления в плейлист %s</string>
 
     <string name="share_url">https://practicum.yandex.ru/android-developer/</string>
     <string name="terms_of_use_url">https://yandex.ru/legal/practicum_offer/</string>

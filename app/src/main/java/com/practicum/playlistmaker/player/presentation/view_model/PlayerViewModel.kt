@@ -5,8 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media.domain.api.FavouritesInteractor
+import com.practicum.playlistmaker.media.domain.api.PlaylistInteractor
+import com.practicum.playlistmaker.media.domain.models.Playlist
 import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
+import com.practicum.playlistmaker.player.presentation.models.PlayerScreenMode
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
+import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
 import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Job
@@ -18,14 +22,21 @@ class PlayerViewModel(
     private val playerInteractor: PlayerInteractor,
     private val favouritesInteractor: FavouritesInteractor,
     private val historyInteractor: HistoryInteractor,
+    private val playlistInteractor: PlaylistInteractor,
 ) :
     ViewModel() {
+
+    private val modeLiveData = MutableLiveData<PlayerScreenMode>()
+    fun observeMode(): LiveData<PlayerScreenMode> = modeLiveData
 
     private val stateLiveData = MutableLiveData<PlayerScreenState>()
     fun observeState(): LiveData<PlayerScreenState> = stateLiveData
 
     private val favouriteLiveData = MutableLiveData<Boolean>()
     fun observeFavourite(): LiveData<Boolean> = favouriteLiveData
+
+    private val trackAddProcessStatus = MutableLiveData<TrackAddProcessStatus>()
+    fun observeAddProcessStatus(): LiveData<TrackAddProcessStatus> = trackAddProcessStatus
 
     private var currentTime: String? = null
     private var timerJob: Job? = null
@@ -36,7 +47,8 @@ class PlayerViewModel(
             track.isFavourite = favouritesInteractor.getFavouriteState(track.trackId ?: 0)
             setFavourite(track.isFavourite)
         }
-
+        setMode(PlayerScreenMode.Player)
+        setAddProcessStatus(TrackAddProcessStatus.None)
     }
 
     private fun loadPlayer() {
@@ -56,6 +68,14 @@ class PlayerViewModel(
 
     private fun setFavourite(isFavourite: Boolean) {
         favouriteLiveData.value = isFavourite
+    }
+
+    private fun setMode(mode: PlayerScreenMode) {
+        modeLiveData.value = mode
+    }
+
+    private fun setAddProcessStatus(status: TrackAddProcessStatus) {
+        trackAddProcessStatus.value = status
     }
 
     private fun startTimer() {
@@ -110,6 +130,44 @@ class PlayerViewModel(
         }
         viewModelScope.launch{
             historyInteractor.addTrackToSearchHistory(track)
+        }
+    }
+
+    fun onNewPlaylistClick() {
+        setMode(PlayerScreenMode.NewPlaylist)
+    }
+
+    fun onPlayerAddTrackClick() {
+        viewModelScope.launch {
+            playlistInteractor
+                .getPlaylists()
+                .collect {
+                    setMode(PlayerScreenMode.BottomSheet(it.toList()))
+                }
+        }
+    }
+
+    fun addTrackToPlaylist(playlistId: Long, playlistName: String?) {
+        viewModelScope.launch {
+            try {
+                playlistInteractor.addTrackToPlaylist(track, playlistId)
+                setAddProcessStatus(TrackAddProcessStatus.Added(playlistName))
+            } catch (e: Exception) {
+                setAddProcessStatus(TrackAddProcessStatus.Error(playlistName))
+            }
+        }
+        setMode(PlayerScreenMode.Player)
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist) {
+        if (playlist.id == null) {
+            setMode(PlayerScreenMode.Player)
+            setAddProcessStatus(TrackAddProcessStatus.Error(playlist.name))
+        }
+        if (playlist.trackList.indexOf(track.trackId) == -1) {
+            addTrackToPlaylist(playlist.id!!, playlist.name)
+        } else {
+            setAddProcessStatus(TrackAddProcessStatus.Exist(playlist.name))
         }
     }
 

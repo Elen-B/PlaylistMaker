@@ -20,6 +20,7 @@
     <dimen name="icon_padding">10dp</dimen>
     <dimen name="switch_width">40dp</dimen>
     <dimen name="track_image_size">44dp</dimen>
+    <dimen name="playlist_image_size">44dp</dimen>
     <dimen name="zero_value">0dp</dimen>
     <dimen name="track_item_height">60dp</dimen>
     <dimen name="small_margin">4dp</dimen>

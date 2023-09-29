@@ -16,9 +16,13 @@ class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor) : V
     private val stateLiveData = MutableLiveData<PlaylistsScreenState>()
     fun observeState(): LiveData<PlaylistsScreenState> = stateLiveData
 
+    init {
+        loadContent()
+    }
+
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
-        loadContent()
+      //  loadContent()
     }
 
     private fun loadContent() {

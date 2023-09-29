@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.presentation.ui
+package com.practicum.playlistmaker.player.presentation.ui
 
 import android.net.Uri
 import android.os.Environment
@@ -9,16 +9,17 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.media.domain.models.Playlist
+import com.practicum.playlistmaker.media.presentation.ui.PlaylistFragment
 import com.practicum.playlistmaker.utils.getTrackCountNoun
 import java.io.File
 
-class PlaylistsViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
+class BottomSheetViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parentView.context)
-        .inflate(R.layout.playlist_grid_item, parentView, false)
+        .inflate(R.layout.playlist_list_item, parentView, false)
 ) {
-    private val playlistImageView: ImageView by lazy { itemView.findViewById(R.id.ivPlaylistGridItem)}
-    private val playlistNameView: TextView by lazy { itemView.findViewById(R.id.tvPlaylistGridItemName)}
-    private val playlistTrackInfoView: TextView by lazy { itemView.findViewById(R.id.tvPlaylistGridItemTrackInfo)}
+    private val playlistImageView: ImageView by lazy { itemView.findViewById(R.id.playlistListItemImage)}
+    private val playlistNameView: TextView by lazy { itemView.findViewById(R.id.playlistListItemName)}
+    private val playlistTrackInfoView: TextView by lazy { itemView.findViewById(R.id.playlistListItemTrackCount)}
 
     fun bind(model: Playlist) {
         playlistNameView.text = model.name.toString()
@@ -31,6 +32,5 @@ class PlaylistsViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
             playlistImageView.setImageURI(Uri.fromFile(file))
             playlistImageView.clipToOutline = true
         }
-
     }
 }

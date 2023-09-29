@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.media.presentation.view_model
 
 import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,8 +27,7 @@ class FavouritesViewModel(private val favouritesInteractor: FavouritesInteractor
             isClickAllowed = it
         }
 
-    override fun onResume(owner: LifecycleOwner) {
-        super.onResume(owner)
+    init {
         loadContent()
     }
 
