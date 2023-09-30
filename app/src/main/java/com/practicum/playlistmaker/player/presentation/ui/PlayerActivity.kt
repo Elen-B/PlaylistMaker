@@ -4,7 +4,9 @@ import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
@@ -29,10 +31,19 @@ import org.koin.core.parameter.parametersOf
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
     private lateinit var viewModel: PlayerViewModel
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     private val bottomSheetAdapter = BottomSheetAdapter(ArrayList()).apply {
         clickListener = BottomSheetAdapter.PlaylistClickListener {
             viewModel.addTrackToPlaylist(it)
+        }
+    }
+
+    private val backPressedCallback = object: OnBackPressedCallback(false) {
+        override fun handleOnBackPressed() {
+            if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
         }
     }
 
@@ -55,6 +66,8 @@ class PlayerActivity : AppCompatActivity() {
                 viewModel.onPlayerAddTrackClick()
             }
         }
+
+       onBackPressedDispatcher.addCallback(backPressedCallback)
 
         val track = getCurrentTrack()
         viewModel = getKoin().get { parametersOf(track) }
@@ -90,7 +103,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         val bottomSheetContainer = binding.playlistsBottomSheet
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
 
@@ -104,6 +117,7 @@ class PlayerActivity : AppCompatActivity() {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.visibility = View.GONE
+                        viewModel.onCancelBottomSheet()
                     }
                     else -> {
                         binding.overlay.visibility = View.VISIBLE
@@ -122,6 +136,7 @@ class PlayerActivity : AppCompatActivity() {
 
             viewModel.onNewPlaylistClick()
         }
+
 }
 
     override fun onPause() {
@@ -149,6 +164,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun renderMode(mode: PlayerScreenMode) {
+        backPressedCallback.isEnabled = mode is PlayerScreenMode.BottomSheet
+
         binding.playerContainerView.isVisible = mode is PlayerScreenMode.NewPlaylist
         binding.svPlayer.isVisible = mode is PlayerScreenMode.Player || mode is PlayerScreenMode.BottomSheet
         binding.overlay.isVisible = mode is PlayerScreenMode.BottomSheet

@@ -38,7 +38,7 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
     }
 
     private fun setState(state: PlaylistScreenState) {
-        stateLiveData.postValue(state)
+        stateLiveData.value = state
     }
 
     private fun setResult(result: PlaylistScreenResult) {

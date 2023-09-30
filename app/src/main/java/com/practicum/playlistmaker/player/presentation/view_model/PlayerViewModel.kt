@@ -40,12 +40,21 @@ class PlayerViewModel(
 
     private var currentTime: String? = null
     private var timerJob: Job? = null
+    private var playlists: List<Playlist> = listOf()
 
     init {
         loadPlayer()
         viewModelScope.launch {
             track.isFavourite = favouritesInteractor.getFavouriteState(track.trackId ?: 0)
             setFavourite(track.isFavourite)
+        }
+
+        viewModelScope.launch {
+            playlistInteractor
+                .getPlaylists()
+                .collect {
+                    playlists = it
+                }
         }
         setMode(PlayerScreenMode.Player)
         setAddProcessStatus(TrackAddProcessStatus.None)
@@ -137,14 +146,12 @@ class PlayerViewModel(
         setMode(PlayerScreenMode.NewPlaylist)
     }
 
+    fun onCancelBottomSheet() {
+        setMode(PlayerScreenMode.Player)
+    }
+
     fun onPlayerAddTrackClick() {
-        viewModelScope.launch {
-            playlistInteractor
-                .getPlaylists()
-                .collect {
-                    setMode(PlayerScreenMode.BottomSheet(it.toList()))
-                }
-        }
+        setMode(PlayerScreenMode.BottomSheet(playlists))
     }
 
     fun addTrackToPlaylist(playlistId: Long, playlistName: String?) {

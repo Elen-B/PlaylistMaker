@@ -88,7 +88,7 @@ class PlaylistFragment: Fragment() {
                 viewModel.onCancelPlaylist()
             }
 
-        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, backPressedCallback)
 
         binding.btPlaylistBack.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -109,11 +109,6 @@ class PlaylistFragment: Fragment() {
         binding.btCreatePlaylist.setOnClickListener {
             viewModel.onAddPlaylistClick()
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        requireActivity().onBackPressedDispatcher.addCallback(backPressedCallback)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -165,7 +160,8 @@ class PlaylistFragment: Fragment() {
     }
 
     private fun privateNavigateUp() {
-        hideKeaboard()
+        hideKeyboard()
+        backPressedCallback.isEnabled = false
         if (!tag.equals(PlayerActivity.FRAGMENT_TAG)) {
             findNavController().navigateUp()
         }
@@ -208,7 +204,7 @@ class PlaylistFragment: Fragment() {
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
     }
 
-    private fun hideKeaboard() {
+    private fun hideKeyboard() {
         val imm =requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(binding.edPlaylistName.windowToken, 0)
     }
