@@ -201,7 +201,7 @@ class PlaylistFragment: Fragment() {
         val outputStream = FileOutputStream(file)
         BitmapFactory
             .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+            .compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY_DEGREE, outputStream)
     }
 
     private fun hideKeyboard() {
@@ -218,5 +218,7 @@ class PlaylistFragment: Fragment() {
         private const val PLAYLIST_IMAGE = "PLAYLIST_IMAGE"
         private const val PLAYLIST_NAME = "PLAYLIST_NAME"
         private const val PLAYLIST_DESCRIPTION = "PLAYLIST_DESCRIPTION"
+
+        private const val COMPRESS_QUALITY_DEGREE = 30
     }
 }

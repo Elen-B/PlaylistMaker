@@ -23,7 +23,7 @@ class FavouritesViewModel(private val favouritesInteractor: FavouritesInteractor
 
     private var isClickAllowed = true
     private val onTrackClickDebounce =
-        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewModelScope, false) {
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY_MILLIS, viewModelScope, false) {
             isClickAllowed = it
         }
 
@@ -70,6 +70,6 @@ class FavouritesViewModel(private val favouritesInteractor: FavouritesInteractor
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }

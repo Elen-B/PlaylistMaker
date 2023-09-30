@@ -92,7 +92,7 @@ class PlayerViewModel(
             while (stateLiveData.value is PlayerScreenState.Playing || stateLiveData.value is PlayerScreenState.Progress) {
                 currentTime = getCurrentTime()
                 setState(PlayerScreenState.Progress(getCurrentTime()))
-                delay(TIME_DEBOUNCE_DELAY)
+                delay(TIME_DEBOUNCE_DELAY_MILLIS)
             }
         }
     }
@@ -185,6 +185,6 @@ class PlayerViewModel(
 
     companion object {
         private const val DEFAULT_TIME = "00:00"
-        private const val TIME_DEBOUNCE_DELAY = 300L
+        private const val TIME_DEBOUNCE_DELAY_MILLIS = 300L
     }
 }

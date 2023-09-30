@@ -28,7 +28,7 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
 
     private var isClickAllowed = true
     private val onPlaylistClickDebounce =
-        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewModelScope, false) {
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY_MILLIS, viewModelScope, false) {
             isClickAllowed = it
         }
 
@@ -116,6 +116,6 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }
