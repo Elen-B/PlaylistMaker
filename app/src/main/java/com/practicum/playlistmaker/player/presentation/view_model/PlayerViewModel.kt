@@ -13,6 +13,7 @@ import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
 import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.utils.SingleEventLiveData
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -35,8 +36,8 @@ class PlayerViewModel(
     private val favouriteLiveData = MutableLiveData<Boolean>()
     fun observeFavourite(): LiveData<Boolean> = favouriteLiveData
 
-    private val trackAddProcessStatus = MutableLiveData<TrackAddProcessStatus>()
-    fun observeAddProcessStatus(): LiveData<TrackAddProcessStatus> = trackAddProcessStatus
+    private val trackAddProcessStatus = SingleEventLiveData<TrackAddProcessStatus>()
+    fun getAddProcessStatus(): LiveData<TrackAddProcessStatus> = trackAddProcessStatus
 
     private var currentTime: String? = null
     private var timerJob: Job? = null
@@ -57,7 +58,6 @@ class PlayerViewModel(
                 }
         }
         setMode(PlayerScreenMode.Player)
-        setAddProcessStatus(TrackAddProcessStatus.None)
     }
 
     private fun loadPlayer() {

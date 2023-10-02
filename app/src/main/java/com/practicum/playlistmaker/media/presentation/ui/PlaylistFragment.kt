@@ -61,7 +61,6 @@ class PlaylistFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val pickImage =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 viewModel.onPlaylistImageChanged(uri)
@@ -76,7 +75,7 @@ class PlaylistFragment: Fragment() {
             addPlaylist(it)
         }
 
-        viewModel.observeResult().observe(viewLifecycleOwner) {
+        viewModel.getResult().observe(viewLifecycleOwner) {
             renderResult(it)
         }
 
@@ -164,6 +163,8 @@ class PlaylistFragment: Fragment() {
         backPressedCallback.isEnabled = false
         if (!tag.equals(PlayerActivity.FRAGMENT_TAG)) {
             findNavController().navigateUp()
+        } else {
+            parentFragmentManager.popBackStack()
         }
     }
 

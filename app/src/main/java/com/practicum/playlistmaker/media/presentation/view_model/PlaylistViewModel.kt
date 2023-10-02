@@ -20,8 +20,8 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
     private val stateLiveData = MutableLiveData<PlaylistScreenState>()
     fun observeState(): LiveData<PlaylistScreenState> = stateLiveData
 
-    private val resultLiveData = MutableLiveData<PlaylistScreenResult>()
-    fun observeResult(): LiveData<PlaylistScreenResult> = resultLiveData
+    private val resultLiveData = SingleEventLiveData<PlaylistScreenResult>()
+    fun getResult(): LiveData<PlaylistScreenResult> = resultLiveData
 
     private val addPlaylistTrigger = SingleEventLiveData<Playlist>()
     fun getAddPlaylistTrigger(): LiveData<Playlist> = addPlaylistTrigger
@@ -34,7 +34,6 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
 
     init {
         setState(PlaylistScreenState.Empty)
-        setResult(PlaylistScreenResult.None)
     }
 
     private fun setState(state: PlaylistScreenState) {

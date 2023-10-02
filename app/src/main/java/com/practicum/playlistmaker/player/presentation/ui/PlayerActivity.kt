@@ -24,13 +24,15 @@ import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
 import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import org.koin.android.ext.android.getKoin
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
-    private lateinit var viewModel: PlayerViewModel
+    private lateinit var track: Track
+
+    private val viewModel: PlayerViewModel by viewModel {parametersOf(track)}
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<LinearLayout>
 
     private val bottomSheetAdapter = BottomSheetAdapter(ArrayList()).apply {
@@ -42,7 +44,7 @@ class PlayerActivity : AppCompatActivity() {
     private val backPressedCallback = object: OnBackPressedCallback(false) {
         override fun handleOnBackPressed() {
             if (bottomSheetBehavior.state != BottomSheetBehavior.STATE_HIDDEN) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                viewModel.onCancelBottomSheet()
             }
         }
     }
@@ -69,8 +71,7 @@ class PlayerActivity : AppCompatActivity() {
 
        onBackPressedDispatcher.addCallback(backPressedCallback)
 
-        val track = getCurrentTrack()
-        viewModel = getKoin().get { parametersOf(track) }
+        track = getCurrentTrack()
 
         viewModel.observeState().observe(this) {
             render(it)
@@ -84,7 +85,7 @@ class PlayerActivity : AppCompatActivity() {
             renderMode(it)
         }
 
-        viewModel.observeAddProcessStatus().observe(this) {
+        viewModel.getAddProcessStatus().observe(this) {
             renderAddProcessStatus(it)
         }
 
@@ -103,12 +104,9 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         val bottomSheetContainer = binding.playlistsBottomSheet
-        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
-        }
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer)
 
         binding.playerAddTrack.setOnClickListener {
-            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             viewModel.onPlayerAddTrackClick()
         }
 
@@ -132,11 +130,11 @@ class PlayerActivity : AppCompatActivity() {
         binding.playlistListView.btNewPlaylist.setOnClickListener {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.player_container_view, PlaylistFragment(), FRAGMENT_TAG)
+                .addToBackStack(null)
                 .commit()
 
             viewModel.onNewPlaylistClick()
         }
-
 }
 
     override fun onPause() {
@@ -172,6 +170,7 @@ class PlayerActivity : AppCompatActivity() {
         binding.playlistsBottomSheet.isVisible = mode is PlayerScreenMode.BottomSheet
 
         if (mode is PlayerScreenMode.BottomSheet) {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             bottomSheetAdapter.addItems(mode.playlists)
         }
     }
