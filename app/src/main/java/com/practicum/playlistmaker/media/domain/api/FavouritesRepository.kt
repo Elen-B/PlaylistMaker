@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavouritesRepository {
 
-    fun getFavouriteTracks(): Flow<List<Track>>
+    suspend fun getFavouriteTracks(): Flow<List<Track>>
 
     suspend fun getFavouriteState(trackId: Long): Boolean
 

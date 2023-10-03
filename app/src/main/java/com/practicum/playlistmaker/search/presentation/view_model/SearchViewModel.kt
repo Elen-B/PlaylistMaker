@@ -29,13 +29,13 @@ class SearchViewModel(
     private var isClickAllowed = true
 
     private val onTrackSearchDebounce =
-        debounce<String?>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
+        debounce<String?>(SEARCH_DEBOUNCE_DELAY_MILLIS, viewModelScope, true) {
             if (it?.isEmpty() == false)
                 search(it)
         }
 
     private val onTrackClickDebounce =
-        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewModelScope, false) {
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY_MILLIS, viewModelScope, false) {
             isClickAllowed = it
         }
 
@@ -166,7 +166,7 @@ class SearchViewModel(
     }
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }

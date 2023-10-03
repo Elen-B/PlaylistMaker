@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.GridLayoutManager
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.media.presentation.models.PlaylistsScreenState
 import com.practicum.playlistmaker.media.presentation.view_model.PlaylistsViewModel
@@ -16,11 +19,15 @@ class PlaylistsFragment: Fragment() {
 
     private val playlistsViewModel: PlaylistsViewModel by viewModel()
 
+    private val playlistsAdapter = PlaylistsAdapter(ArrayList())
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        lifecycle.addObserver(playlistsViewModel)
+
         binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -28,13 +35,31 @@ class PlaylistsFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.playlistsGridView.rvPlaylistGrid.layoutManager = GridLayoutManager(requireContext(), 2)
+        binding.playlistsGridView.rvPlaylistGrid.adapter = playlistsAdapter
+
         playlistsViewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
+        }
+
+        binding.playlistsEmpty.btNewPlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaFragment_to_playlistFragment)
+        }
+
+        binding.playlistsGridView.btNewPlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_mediaFragment_to_playlistFragment)
         }
     }
 
     private fun render(state: PlaylistsScreenState) {
-        binding.playlistsEmpty.root.isVisible = state == PlaylistsScreenState.Empty
+        binding.playlistsEmpty.root.isVisible = state is PlaylistsScreenState.Empty
+        binding.progressBar.isVisible = state is PlaylistsScreenState.Loading
+        binding.playlistsGridView.root.isVisible = state is PlaylistsScreenState.Content
+
+        when (state) {
+            is PlaylistsScreenState.Loading, PlaylistsScreenState.Empty -> Unit
+            is PlaylistsScreenState.Content -> playlistsAdapter.addItems(state.playlists)
+        }
     }
 
     companion object {

@@ -1,8 +1,12 @@
 package com.practicum.playlistmaker.di
 
 import com.practicum.playlistmaker.media.data.impl.FavouritesRepositoryImpl
+import com.practicum.playlistmaker.media.data.impl.PlaylistRepositoryImpl
+import com.practicum.playlistmaker.media.data.mapper.PlaylistDbMapper
+import com.practicum.playlistmaker.media.data.mapper.PlaylistTrackDbMapper
 import com.practicum.playlistmaker.media.data.mapper.TrackDbMapper
 import com.practicum.playlistmaker.media.domain.api.FavouritesRepository
+import com.practicum.playlistmaker.media.domain.api.PlaylistRepository
 import com.practicum.playlistmaker.player.data.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerRepository
 import com.practicum.playlistmaker.search.data.impl.HistoryRepositoryImpl
@@ -34,7 +38,19 @@ val repositoryModule = module {
         FavouritesRepositoryImpl(get(), get())
     }
 
+    single<PlaylistRepository> {
+        PlaylistRepositoryImpl(get(), get(), get())
+    }
+
     factory {
         TrackDbMapper()
+    }
+
+    factory {
+        PlaylistDbMapper(get())
+    }
+
+    factory {
+        PlaylistTrackDbMapper()
     }
 }
