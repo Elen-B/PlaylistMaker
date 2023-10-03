@@ -1,11 +1,8 @@
 package com.practicum.playlistmaker.media.presentation.ui
 
 import android.app.Activity
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,9 +27,6 @@ import com.practicum.playlistmaker.media.presentation.models.PlaylistScreenState
 import com.practicum.playlistmaker.media.presentation.view_model.PlaylistViewModel
 import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
-import java.io.FileOutputStream
-
 
 class PlaylistFragment: Fragment() {
     private lateinit var binding: FragmentPlaylistBinding
@@ -187,22 +181,9 @@ class PlaylistFragment: Fragment() {
     private fun addPlaylist(playlist: Playlist) {
         if (binding.playlistImageView.tag != null && !playlist.filePath.isNullOrEmpty()) {
             val uri : Uri = binding.playlistImageView.tag as Uri
-            saveImageToPrivateStorage(uri, playlist.filePath!!)
+            viewModel.saveImageToPrivateStorage(requireActivity().contentResolver.openInputStream(uri))
         }
         viewModel.addPlaylist(playlist)
-    }
-
-    private fun saveImageToPrivateStorage(uri: Uri, fileName: String) {
-        val filePath = File(requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES), IMAGE_DIR)
-        if (!filePath.exists()) {
-            filePath.mkdirs()
-        }
-        val file = File(filePath, fileName)
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        val outputStream = FileOutputStream(file)
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, COMPRESS_QUALITY_DEGREE, outputStream)
     }
 
     private fun hideKeyboard() {
@@ -219,7 +200,5 @@ class PlaylistFragment: Fragment() {
         private const val PLAYLIST_IMAGE = "PLAYLIST_IMAGE"
         private const val PLAYLIST_NAME = "PLAYLIST_NAME"
         private const val PLAYLIST_DESCRIPTION = "PLAYLIST_DESCRIPTION"
-
-        private const val COMPRESS_QUALITY_DEGREE = 30
     }
 }

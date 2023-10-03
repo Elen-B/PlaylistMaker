@@ -1,10 +1,13 @@
 package com.practicum.playlistmaker.media.presentation.view_model
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.media.domain.api.LocalStorageInteractor
 import com.practicum.playlistmaker.media.domain.api.PlaylistInteractor
 import com.practicum.playlistmaker.media.domain.models.Playlist
 import com.practicum.playlistmaker.media.presentation.models.PlaylistScreenResult
@@ -12,9 +15,15 @@ import com.practicum.playlistmaker.media.presentation.models.PlaylistScreenState
 import com.practicum.playlistmaker.utils.SingleEventLiveData
 import com.practicum.playlistmaker.utils.debounce
 import kotlinx.coroutines.launch
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 import kotlin.random.Random
 
-class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): ViewModel() {
+class PlaylistViewModel(
+    private val playlistInteractor: PlaylistInteractor,
+    private val localStorageInteractor: LocalStorageInteractor
+) : ViewModel() {
     private val playlist: Playlist = Playlist()
 
     private val stateLiveData = MutableLiveData<PlaylistScreenState>()
@@ -105,6 +114,22 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
         setResult(PlaylistScreenResult.Canceled)
     }
 
+    fun saveImageToPrivateStorage(inputStream: InputStream?) {
+        val file = playlist.filePath?.let {
+            File(
+                localStorageInteractor.getImageDirectory(),
+                it
+            )
+        }
+        val outputStream = FileOutputStream(file)
+        BitmapFactory
+            .decodeStream(inputStream)
+            .compress(
+                Bitmap.CompressFormat.JPEG,
+                COMPRESS_QUALITY_DEGREE, outputStream
+            )
+    }
+
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
@@ -116,5 +141,6 @@ class PlaylistViewModel(private val playlistInteractor: PlaylistInteractor): Vie
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
+        private const val COMPRESS_QUALITY_DEGREE = 30
     }
 }

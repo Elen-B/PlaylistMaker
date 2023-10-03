@@ -15,7 +15,7 @@
 
     <style name="TrackItemLayoutStyle">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/track_item_height</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">@dimen/small_layout_padding</item>
     </style>
 
