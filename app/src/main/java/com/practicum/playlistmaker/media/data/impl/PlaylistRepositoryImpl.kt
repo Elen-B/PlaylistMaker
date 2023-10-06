@@ -41,4 +41,21 @@ class PlaylistRepositoryImpl(
         playlist.trackCount +=1
         appDatabase.playlistDao().updatePlaylist(playlistDbMapper.map(playlist))
     }
+
+    override suspend fun getFlowPlaylistById(id: Long): Flow<Playlist> {
+        return appDatabase.playlistDao().getFlowPlaylistById(id).map { playlistEntity -> playlistDbMapper.map(playlistEntity) }
+    }
+
+    override suspend fun getPlaylistTracks(): List<Track> {
+        return appDatabase.playlistTrackDao().getPlaylistTracks().map { playlistTrackEntity -> playlistTrackDbMapper.map(playlistTrackEntity)}
+    }
+
+    override suspend fun getPlaylistTracksByTrackIdList(trackIdList: List<Long>): List<Track> {
+        return if (trackIdList.isEmpty())
+            listOf()
+        else {
+            val allPlaylistTracks = getPlaylistTracks()
+            allPlaylistTracks.filter { trackIdList.indexOf(it.trackId) > -1 }
+        }
+    }
 }

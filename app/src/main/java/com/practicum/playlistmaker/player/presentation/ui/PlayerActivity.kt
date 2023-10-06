@@ -188,7 +188,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun init(track : Track) {
         binding.playerTrackName.text = track.trackName.orEmpty()
         binding.playerArtistName.text = track.artistName.orEmpty()
-        binding.playerTrackTimeInfo.text = track.trackTime.orEmpty()
+        binding.playerTrackTimeInfo.text = track.getTrackTime()
         binding.playerAlbumInfo.text = track.albumName.orEmpty()
         binding.playerCountryInfo.text = track.country.orEmpty()
         binding.playerTrackYearInfo.text = track.releaseYear.toString()

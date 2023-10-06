@@ -30,7 +30,7 @@ class TrackRepositoryImpl(
                     it.trackId,
                     it.trackName,
                     it.artistName,
-                    SimpleDateFormat("mm:ss", Locale.getDefault()).format(it.trackTimeMillis ?: 0),
+                    it.trackTimeMillis,
                     it.artworkUrl100,
                     it.collectionName,
                     getReleaseYear(it.releaseDate),

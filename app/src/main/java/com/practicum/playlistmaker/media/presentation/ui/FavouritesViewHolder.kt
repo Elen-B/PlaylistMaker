@@ -25,7 +25,7 @@ class FavouritesViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
         trackInfoView.text = itemView.context.getString(
             R.string.track_info,
             model.artistName,
-            model.trackTime
+            model.getTrackTime()
         )
         Glide.with(itemView)
             .load(model.artworkUrl100)

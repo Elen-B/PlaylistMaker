@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_100">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/playlistDetailsLeftGuideLine16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/playlistDetailsRightGuideLine16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/medium_margin" />
+
+
+        <ImageView
+            android:id="@+id/playlistDetailsImageView"
+            style="@style/PlaylistDetailsCoverImageView"
+            android:src="@drawable/ic_playlist_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
+        <ImageButton
+            android:id="@+id/btPlaylistDetailsBack"
+            style="@style/BackImageButtonStyle"
+            android:contentDescription="@string/button_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ImageContrastCheck" />
+
+        <TextView
+            android:id="@+id/tvPlaylistDetailsName"
+            style="@style/PlaylistDetailsNameTextStyle"
+            tools:text="Название Название Название Название Название"
+
+            app:layout_constraintTop_toBottomOf="@id/playlistDetailsImageView"
+            app:layout_constraintStart_toEndOf="@id/playlistDetailsLeftGuideLine16"
+            app:layout_constraintEnd_toEndOf="@id/playlistDetailsRightGuideLine16"/>
+
+        <TextView
+            android:id="@+id/tvPlaylistDetailsDescription"
+            style="@style/PlaylistDetailsDescriptionTextStyle"
+            tools:text="Описание"
+
+            app:layout_constraintTop_toBottomOf="@id/tvPlaylistDetailsName"
+            app:layout_constraintStart_toEndOf="@id/playlistDetailsLeftGuideLine16"
+            app:layout_constraintEnd_toEndOf="@id/playlistDetailsRightGuideLine16"/>
+
+        <TextView
+            android:id="@+id/tvPlaylistDetailsStatistics"
+            style="@style/PlaylistDetailsDescriptionTextStyle"
+            tools:text="300 минут 98 треков"
+            android:text="@string/playlist_statistics"
+
+            app:layout_constraintTop_toBottomOf="@id/tvPlaylistDetailsDescription"
+            app:layout_constraintStart_toEndOf="@id/playlistDetailsLeftGuideLine16"
+            app:layout_constraintEnd_toEndOf="@id/playlistDetailsRightGuideLine16"/>
+
+        <LinearLayout
+            style="@style/PlaylistDetailsToolbarStyle"
+            android:orientation="horizontal"
+
+            app:layout_constraintTop_toBottomOf="@id/tvPlaylistDetailsStatistics"
+            app:layout_constraintStart_toEndOf="@id/playlistDetailsLeftGuideLine16"
+            app:layout_constraintEnd_toEndOf="@id/playlistDetailsRightGuideLine16">
+
+            <ImageButton
+                android:id="@+id/btPlaylistDetailsShare"
+                style="@style/PlaylistDetailsShareButtonStyle"
+                android:contentDescription="@string/playlist_share_button"
+                tools:ignore="ImageContrastCheck"/>
+
+            <ImageButton
+                android:id="@+id/btPlaylistDetailsMenu"
+                style="@style/PlaylistDetailsMenuButtonStyle"
+                android:contentDescription="@string/playlist_menu_button"
+                tools:ignore="ImageContrastCheck"/>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
