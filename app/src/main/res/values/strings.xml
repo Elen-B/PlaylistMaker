@@ -59,4 +59,5 @@
     <string name="delete_track_dialog_message">Вы уверены, что хотите удалить трек из плейлиста?</string>
     <string name="delete_track_dialog_cancel_button">отмена</string>
     <string name="delete_track_dialog_yes_button">удалить</string>
+    <string name="share_playlist_empty_message">В этом плейлисте нет списка треков, которым можно поделиться</string>
 </resources>

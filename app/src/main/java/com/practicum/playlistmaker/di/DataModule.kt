@@ -6,6 +6,8 @@ import android.os.Environment
 import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.playlistmaker.media.data.AppDatabase
+import com.practicum.playlistmaker.media.data.impl.ExternalNavigatorMediaImpl
+import com.practicum.playlistmaker.media.domain.api.ExternalNavigatorMedia
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.network.ITunesApi
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
@@ -51,6 +53,10 @@ val dataModule = module {
             androidContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "playlistImage"
         ).apply { if (!exists()) mkdirs() }
+    }
+
+    single<ExternalNavigatorMedia> {
+        ExternalNavigatorMediaImpl(androidContext())
     }
 
     factory { Gson() }

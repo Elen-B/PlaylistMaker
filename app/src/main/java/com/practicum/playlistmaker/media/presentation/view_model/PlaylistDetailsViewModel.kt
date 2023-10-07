@@ -106,6 +106,18 @@ class PlaylistDetailsViewModel(
         }
     }
 
+    fun onSharePlaylist(): Boolean {
+        return if (trackListLiveData.value.isNullOrEmpty() or (stateLiveData.value !is PlaylistDetailsScreenState.Content))
+            false
+        else {
+            val playlist = (stateLiveData.value as PlaylistDetailsScreenState.Content).data
+            val trackList = trackListLiveData.value.orEmpty()
+            val playlistInfo = playlistInteractor.getPlaylistInfo(playlist, trackList)
+            playlistInteractor.sharePlaylist(playlistInfo)
+            true
+        }
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }

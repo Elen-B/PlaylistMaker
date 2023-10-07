@@ -244,7 +244,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     companion object {
         const val TRACK = "Track"

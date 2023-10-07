@@ -17,4 +17,8 @@ interface PlaylistInteractor {
     suspend fun getFlowPlaylistById(id: Long): Flow<Playlist>
 
     suspend fun getPlaylistTracksByTrackIdList(trackIdList: List<Long>): List<Track>
+
+    fun getPlaylistInfo(playlist: Playlist, trackList: List<Track>): String
+
+    fun sharePlaylist(playlistInfo: String)
 }

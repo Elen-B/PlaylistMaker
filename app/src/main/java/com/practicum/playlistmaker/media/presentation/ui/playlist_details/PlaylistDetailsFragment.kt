@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -88,6 +89,12 @@ class PlaylistDetailsFragment: Fragment() {
             findNavController().navigateUp()
         }
 
+        binding.btPlaylistDetailsShare.setOnClickListener {
+            if (!viewModel.onSharePlaylist()) {
+                showMessage(getString(R.string.share_playlist_empty_message))
+            }
+        }
+
         deleteTrackDialog = MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.delete_track_dialog_title))
             .setMessage(R.string.delete_track_dialog_message)
@@ -138,4 +145,6 @@ class PlaylistDetailsFragment: Fragment() {
         findNavController().navigate(R.id.action_playlistDetailsFragment_to_playerActivity,
             PlayerActivity.createArgs(track))
     }
+
+    private fun showMessage(message: String) = Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 }
