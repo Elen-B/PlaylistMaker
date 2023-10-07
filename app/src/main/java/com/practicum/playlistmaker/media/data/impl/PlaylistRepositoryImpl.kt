@@ -30,8 +30,12 @@ class PlaylistRepositoryImpl(
         return playlistDbMapper.map(appDatabase.playlistDao().getPlaylistById(id))
     }
 
-    override suspend fun getPlaylists(): Flow<List<Playlist>> {
-        return appDatabase.playlistDao().getPlaylists().map { it.map { playlistEntity -> playlistDbMapper.map(playlistEntity) } }
+    override suspend fun getPlaylists(): List<Playlist> {
+        return appDatabase.playlistDao().getPlaylists().map { playlistEntity -> playlistDbMapper.map(playlistEntity) }
+    }
+
+    override suspend fun getFlowPlaylists(): Flow<List<Playlist>> {
+        return appDatabase.playlistDao().getFlowPlaylists().map { it.map { playlistEntity -> playlistDbMapper.map(playlistEntity) } }
     }
 
     override suspend fun addTrackToPlaylist(track: Track, playlistId: Long) {
@@ -40,6 +44,16 @@ class PlaylistRepositoryImpl(
         playlist.trackList.add(track.trackId!!)
         playlist.trackCount +=1
         appDatabase.playlistDao().updatePlaylist(playlistDbMapper.map(playlist))
+    }
+
+    override suspend fun deleteTrackFromPlaylist(track: Track, playlistId: Long) {
+        val playlist = getPlaylistById(playlistId)
+        playlist.trackList.remove(track.trackId)
+        playlist.trackCount -= 1
+        appDatabase.playlistDao().updatePlaylist(playlistDbMapper.map(playlist))
+        if (isUnusedPlaylistTrack(track)) {
+            appDatabase.playlistTrackDao().deletePlaylistTrack(playlistTrackDbMapper.map(track))
+        }
     }
 
     override suspend fun getFlowPlaylistById(id: Long): Flow<Playlist> {
@@ -57,5 +71,10 @@ class PlaylistRepositoryImpl(
             val allPlaylistTracks = getPlaylistTracks()
             allPlaylistTracks.filter { trackIdList.indexOf(it.trackId) > -1 }
         }
+    }
+
+    private suspend fun isUnusedPlaylistTrack(track: Track): Boolean {
+        val playlists = getPlaylists().filter { playlist -> playlist.trackList.indexOf(track.trackId) > -1 }
+        return playlists.isEmpty()
     }
 }

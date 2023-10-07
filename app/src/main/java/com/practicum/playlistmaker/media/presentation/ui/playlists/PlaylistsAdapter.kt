@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.presentation.ui
+package com.practicum.playlistmaker.media.presentation.ui.playlists
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

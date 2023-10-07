@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.presentation.ui
+package com.practicum.playlistmaker.media.presentation.ui.playlist
 
 import android.app.Activity
 import android.net.Uri
@@ -118,7 +118,9 @@ class PlaylistFragment: Fragment() {
         super.onViewStateRestored(savedInstanceState)
 
         binding.edPlaylistName.editText?.setText(savedInstanceState?.getString(PLAYLIST_NAME))
-        binding.edPlaylistDescription.editText?.setText(savedInstanceState?.getString(PLAYLIST_DESCRIPTION))
+        binding.edPlaylistDescription.editText?.setText(savedInstanceState?.getString(
+            PLAYLIST_DESCRIPTION
+        ))
         val stringUri = savedInstanceState?.getString(PLAYLIST_IMAGE)
         if (!stringUri.isNullOrEmpty()) {
             setPlaylistImage(Uri.parse(stringUri))

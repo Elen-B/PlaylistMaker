@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.presentation.ui
+package com.practicum.playlistmaker.media.presentation.ui.playlists
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.media.presentation.models.PlaylistsScreenState
+import com.practicum.playlistmaker.media.presentation.ui.MediaFragmentDirections
 import com.practicum.playlistmaker.media.presentation.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

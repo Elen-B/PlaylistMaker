@@ -33,7 +33,7 @@ class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor) : V
     private fun loadContent() {
         viewModelScope.launch {
             playlistInteractor
-                .getPlaylists()
+                .getFlowPlaylists()
                 .collect {
                     processResult(it)
                 }

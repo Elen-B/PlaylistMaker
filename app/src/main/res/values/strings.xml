@@ -39,6 +39,7 @@
     <string name="playlist_menu_button">меню плейлиста</string>
     <string name="playlist_statistics">"%1$s \u00B7 %2$s"</string>
     <string name="add_status_added">Добавлено в плейлист %s</string>
+    <string name="playlist_tracks_empty">В этом плейлисте нет треков</string>
     <string name="add_status_exist">Трек уже добавлен в плейлист %s</string>
     <string name="add_status_error">Ошибка добавления в плейлист %s</string>
 
@@ -53,4 +54,9 @@
     <string name="create_playlist_dialog_message">Все несохраненные данные будут потеряны</string>
     <string name="create_playlist_dialog_cancel_button">отмена</string>
     <string name="create_playlist_dialog_yes_button">завершить</string>
+
+    <string name="delete_track_dialog_title">Удалить трек</string>
+    <string name="delete_track_dialog_message">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="delete_track_dialog_cancel_button">отмена</string>
+    <string name="delete_track_dialog_yes_button">удалить</string>
 </resources>

@@ -18,5 +18,7 @@ data class Track(
 ) {
     fun getCoverArtwork() = artworkUrl100?.replaceAfterLast('/', "512x512bb.jpg")
 
-    fun getTrackTime() = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis).orEmpty()
+    fun getCoverArtwork60() = artworkUrl100?.replaceAfterLast('/', "60x60bb.jpg")
+
+    fun getTrackTime() = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis ?: 0).orEmpty()
 }

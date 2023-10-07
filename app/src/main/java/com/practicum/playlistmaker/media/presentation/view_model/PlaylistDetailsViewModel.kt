@@ -9,6 +9,8 @@ import com.practicum.playlistmaker.media.domain.api.PlaylistInteractor
 import com.practicum.playlistmaker.media.domain.models.Playlist
 import com.practicum.playlistmaker.media.presentation.models.PlaylistDetailsScreenState
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.utils.SingleEventLiveData
+import com.practicum.playlistmaker.utils.debounce
 import com.practicum.playlistmaker.utils.getMinuteCountNoun
 import com.practicum.playlistmaker.utils.getTrackCountNoun
 import kotlinx.coroutines.launch
@@ -25,6 +27,15 @@ class PlaylistDetailsViewModel(
 
     private val trackListLiveData = MutableLiveData<List<Track>>()
     fun observeTrackList(): LiveData<List<Track>> = trackListLiveData
+
+    private val showPlayerTrigger = SingleEventLiveData<Track>()
+    fun getShowPlayerTrigger(): LiveData<Track> = showPlayerTrigger
+
+    private var isClickAllowed = true
+    private val onTrackClickDebounce =
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY_MILLIS, viewModelScope, false) {
+            isClickAllowed = it
+        }
 
     init {
         loadContent()
@@ -59,6 +70,15 @@ class PlaylistDetailsViewModel(
 
     private fun getPlaylistTimeMillis(): Long = trackListLiveData.value?.sumOf { it.trackTimeMillis ?: 0 } ?: 0
 
+    private fun trackClickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            onTrackClickDebounce(true)
+        }
+        return current
+    }
+
     fun getImageDirectory(): File = localStorageInteractor.getImageDirectory()
 
     fun getTrackCountStatistics(): String {
@@ -69,5 +89,24 @@ class PlaylistDetailsViewModel(
     fun getPlaylistTimeStatistics(): String {
         val minutes = getPlaylistTimeMillis() / 1000 / 60
         return minutes.toString() + " " + getMinuteCountNoun(minutes)
+    }
+
+    fun showPlayer(track: Track) {
+        if (trackClickDebounce()) {
+            showPlayerTrigger.value = track
+        }
+    }
+
+    fun onDeleteTrackClick(track: Track) {
+        if (stateLiveData.value is PlaylistDetailsScreenState.Content) {
+            viewModelScope.launch {
+                val playlistId = (stateLiveData.value as PlaylistDetailsScreenState.Content).data.id
+                playlistInteractor.deleteTrackFromPlaylist(track, playlistId)
+            }
+        }
+    }
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }

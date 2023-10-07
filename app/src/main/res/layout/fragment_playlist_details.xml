@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".media.presentation.ui.playlist_details.PlaylistDetailsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -37,7 +38,7 @@
 
         <ImageButton
             android:id="@+id/btPlaylistDetailsBack"
-            style="@style/BackImageButtonStyle"
+            style="@style/BlackBackImageButtonStyle"
             android:contentDescription="@string/button_back"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -72,6 +73,7 @@
             app:layout_constraintEnd_toEndOf="@id/playlistDetailsRightGuideLine16"/>
 
         <LinearLayout
+            android:id="@+id/llPlaylistDetailsToolbar"
             style="@style/PlaylistDetailsToolbarStyle"
             android:orientation="horizontal"
 
@@ -91,6 +93,39 @@
                 android:contentDescription="@string/playlist_menu_button"
                 tools:ignore="ImageContrastCheck"/>
         </LinearLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/playlist_details_tracks_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_bottom_sheet"
+        android:orientation="vertical"
+        app:behavior_hideable="false"
+        app:behavior_peekHeight="200dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_rounded_rectangle"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/tvPlaylistTrackEmpty"
+            style="@style/PlaylistTrackEmptyTextStyle"
+            android:text="@string/playlist_tracks_empty"
+            android:visibility="gone"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvPlaylistTrackList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/large_margin"
+            tools:listitem="@layout/track_view"
+            tools:itemCount="2"
+            android:scrollbars="vertical"
+            android:visibility="visible"/>
+    </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

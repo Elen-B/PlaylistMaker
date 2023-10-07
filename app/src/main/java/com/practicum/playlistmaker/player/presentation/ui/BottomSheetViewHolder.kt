@@ -9,7 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.media.domain.models.Playlist
-import com.practicum.playlistmaker.media.presentation.ui.PlaylistFragment
+import com.practicum.playlistmaker.media.presentation.ui.playlist.PlaylistFragment
 import com.practicum.playlistmaker.utils.getTrackCountNoun
 import java.io.File
 
