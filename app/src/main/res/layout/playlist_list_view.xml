@@ -23,6 +23,5 @@
         android:scrollbars="vertical"
         android:visibility="visible"
         tools:itemCount="4"
-        tools:listitem="@layout/playlist_list_item" />
-
+        tools:listitem="@layout/playlist_list_item"/>
 </LinearLayout>

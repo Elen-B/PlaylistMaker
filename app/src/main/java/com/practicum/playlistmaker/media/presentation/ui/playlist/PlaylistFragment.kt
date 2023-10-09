@@ -28,11 +28,11 @@ import com.practicum.playlistmaker.media.presentation.view_model.PlaylistViewMod
 import com.practicum.playlistmaker.player.presentation.ui.PlayerActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistFragment: Fragment() {
-    private lateinit var binding: FragmentPlaylistBinding
+open class PlaylistFragment: Fragment() {
+    protected lateinit var binding: FragmentPlaylistBinding
     lateinit var confirmDialog: MaterialAlertDialogBuilder
 
-    private val viewModel: PlaylistViewModel by viewModel()
+    protected open val viewModel: PlaylistViewModel by viewModel()
 
     private val backPressedCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -57,8 +57,10 @@ class PlaylistFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val pickImage =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                viewModel.onPlaylistImageChanged(uri)
-                setPlaylistImage(uri)
+                if (uri != null) {
+                    viewModel.onPlaylistImageChanged(uri)
+                    setPlaylistImage(uri)
+                }
             }
 
         viewModel.observeState().observe(viewLifecycleOwner) {
@@ -117,13 +119,15 @@ class PlaylistFragment: Fragment() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
 
-        binding.edPlaylistName.editText?.setText(savedInstanceState?.getString(PLAYLIST_NAME))
-        binding.edPlaylistDescription.editText?.setText(savedInstanceState?.getString(
-            PLAYLIST_DESCRIPTION
-        ))
-        val stringUri = savedInstanceState?.getString(PLAYLIST_IMAGE)
-        if (!stringUri.isNullOrEmpty()) {
-            setPlaylistImage(Uri.parse(stringUri))
+        if (savedInstanceState != null) {
+            binding.edPlaylistName.editText?.setText(savedInstanceState.getString(PLAYLIST_NAME))
+            binding.edPlaylistDescription.editText?.setText(savedInstanceState.getString(
+                PLAYLIST_DESCRIPTION
+            ))
+            val stringUri = savedInstanceState.getString(PLAYLIST_IMAGE)
+            if (!stringUri.isNullOrEmpty()) {
+                setPlaylistImage(Uri.parse(stringUri))
+            }
         }
     }
 
@@ -139,7 +143,7 @@ class PlaylistFragment: Fragment() {
         setEditTextStyle(binding.edPlaylistDescription, !content?.description.isNullOrEmpty())
     }
 
-    private fun renderResult(result: PlaylistScreenResult) {
+    protected open fun renderResult(result: PlaylistScreenResult) {
         when (result) {
             is PlaylistScreenResult.Canceled -> {
                 setFragmentResult(RESULT_KEY, bundleOf(KEY_PLAYLIST_ID to 0, KEY_PLAYLIST_NAME to ""))
@@ -150,11 +154,10 @@ class PlaylistFragment: Fragment() {
                 Toast.makeText(requireContext(), "Плейлист " + result.content.name + " создан", Toast.LENGTH_LONG).show()
                 privateNavigateUp()
             }
-            else -> Unit
         }
     }
 
-    private fun privateNavigateUp() {
+    protected fun privateNavigateUp() {
         hideKeyboard()
         backPressedCallback.isEnabled = false
         if (!tag.equals(PlayerActivity.FRAGMENT_TAG)) {

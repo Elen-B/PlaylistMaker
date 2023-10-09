@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.media.presentation.view_model
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,6 +32,12 @@ class PlaylistDetailsViewModel(
     private val showPlayerTrigger = SingleEventLiveData<Track>()
     fun getShowPlayerTrigger(): LiveData<Track> = showPlayerTrigger
 
+    private val showPlaylistEditTrigger = SingleEventLiveData<Playlist>()
+    fun getShowPlaylistEditTrigger(): LiveData<Playlist> = showPlaylistEditTrigger
+
+    private val deletePlaylistTrigger = SingleEventLiveData<Boolean>()
+    fun getDeletePlaylistTrigger(): LiveData<Boolean> = deletePlaylistTrigger
+
     private var isClickAllowed = true
     private val onTrackClickDebounce =
         debounce<Boolean>(CLICK_DEBOUNCE_DELAY_MILLIS, viewModelScope, false) {
@@ -49,7 +56,9 @@ class PlaylistDetailsViewModel(
                 .getFlowPlaylistById(playlistId)
                 .collect { playlist ->
                     processResult(playlist)
-                    setTrackList(playlistInteractor.getPlaylistTracksByTrackIdList(playlist.trackList))
+                    if (playlist != null) {
+                        setTrackList(playlistInteractor.getPlaylistTracksByTrackIdList(playlist.trackList))
+                    }
                 }
         }
     }
@@ -62,15 +71,19 @@ class PlaylistDetailsViewModel(
         trackListLiveData.value = trackList
     }
 
-    private fun processResult(playlist: Playlist) {
-        setState(PlaylistDetailsScreenState.Content(playlist))
+    private fun processResult(playlist: Playlist?) {
+        if (playlist == null) {
+            setState(PlaylistDetailsScreenState.Error("Плейлист не найден"))
+        } else {
+            setState(PlaylistDetailsScreenState.Content(playlist))
+        }
     }
 
     private fun getTrackCount(): Int = trackListLiveData.value?.size ?: 0
 
     private fun getPlaylistTimeMillis(): Long = trackListLiveData.value?.sumOf { it.trackTimeMillis ?: 0 } ?: 0
 
-    private fun trackClickDebounce(): Boolean {
+    private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
@@ -92,7 +105,7 @@ class PlaylistDetailsViewModel(
     }
 
     fun showPlayer(track: Track) {
-        if (trackClickDebounce()) {
+        if (clickDebounce()) {
             showPlayerTrigger.value = track
         }
     }
@@ -115,6 +128,24 @@ class PlaylistDetailsViewModel(
             val playlistInfo = playlistInteractor.getPlaylistInfo(playlist, trackList)
             playlistInteractor.sharePlaylist(playlistInfo)
             true
+        }
+    }
+
+    fun onDeletePlaylist() {
+        Log.e("sprint23", "deleting.. ")
+        if (stateLiveData.value is PlaylistDetailsScreenState.Content) {
+            viewModelScope.launch {
+
+                val playlist = (stateLiveData.value as PlaylistDetailsScreenState.Content).data
+                playlistInteractor.deletePlaylist(playlist)
+                deletePlaylistTrigger.value = true
+            }
+        }
+    }
+
+    fun showPlaylistEdit() {
+        if (clickDebounce() && stateLiveData.value is PlaylistDetailsScreenState.Content) {
+            showPlaylistEditTrigger.value = (stateLiveData.value as PlaylistDetailsScreenState.Content).data
         }
     }
 

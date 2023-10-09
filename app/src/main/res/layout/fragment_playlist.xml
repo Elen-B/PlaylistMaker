@@ -38,6 +38,7 @@
                 tools:ignore="ImageContrastCheck" />
 
             <TextView
+                android:id="@+id/tvPlaylistTitle"
                 style="@style/HeaderItemMenuTextStyle"
                 android:layout_marginStart="8dp"
                 android:text="@string/button_playlist"/>

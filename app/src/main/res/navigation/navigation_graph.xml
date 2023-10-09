@@ -66,5 +66,17 @@
         <action
             android:id="@+id/action_playlistDetailsFragment_to_playerActivity"
             app:destination="@id/playerActivity" />
+        <action
+            android:id="@+id/action_playlistDetailsFragment_to_playlistEditFragment"
+            app:destination="@id/playlistEditFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/playlistEditFragment"
+        android:name="com.practicum.playlistmaker.media.presentation.ui.playlist.PlaylistEditFragment"
+        android:label="PlaylistEditFragment"
+        tools:layout="@layout/fragment_playlist" >
+        <argument
+            android:name="playlist"
+            app:argType="com.practicum.playlistmaker.media.presentation.models.ParcelablePlaylist" />
     </fragment>
 </navigation>

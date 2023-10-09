@@ -8,7 +8,9 @@ interface PlaylistRepository {
 
     suspend fun addPlaylist(playlist: Playlist): Long
 
-    suspend fun getPlaylistById(id: Long): Playlist
+    suspend fun deletePlaylist(playlist: Playlist)
+
+    suspend fun getPlaylistById(id: Long): Playlist?
 
     suspend fun getPlaylists(): List<Playlist>
 
@@ -18,7 +20,7 @@ interface PlaylistRepository {
 
     suspend fun deleteTrackFromPlaylist(track: Track, playlistId: Long)
 
-    suspend fun getFlowPlaylistById(id: Long): Flow<Playlist>
+    suspend fun getFlowPlaylistById(id: Long): Flow<Playlist?>
 
     suspend fun getPlaylistTracks(): List<Track>
 
