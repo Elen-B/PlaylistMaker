@@ -20,6 +20,7 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <View
+        android:id="@+id/dividerView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/thin_line"
         android:background="@color/grey_150"
