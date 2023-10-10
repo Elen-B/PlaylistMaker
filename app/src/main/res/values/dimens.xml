@@ -39,4 +39,5 @@
     <dimen name="tab_padding">40dp</dimen>
     <dimen name="thin_line">1dp</dimen>
     <dimen name="playlist_toolbar_button_size">24dp</dimen>
+    <dimen name="playlist_create_button_size">44dp</dimen>
 </resources>

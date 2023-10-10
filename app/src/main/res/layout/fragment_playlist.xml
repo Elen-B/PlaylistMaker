@@ -103,10 +103,6 @@
         <Button
             android:id="@+id/btCreatePlaylist"
             style="@style/CreatePlaylistButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:backgroundTint="@color/create_playlist_selector"
             android:enabled="false"
             android:text="@string/button_create_playlist"
             app:layout_constraintBottom_toBottomOf="parent"
