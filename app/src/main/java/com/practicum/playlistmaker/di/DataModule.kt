@@ -6,11 +6,14 @@ import android.os.Environment
 import androidx.room.Room
 import com.google.gson.Gson
 import com.practicum.playlistmaker.media.data.AppDatabase
+import com.practicum.playlistmaker.media.data.impl.ExternalNavigatorMediaImpl
+import com.practicum.playlistmaker.media.domain.api.ExternalNavigatorMedia
 import com.practicum.playlistmaker.search.data.NetworkClient
 import com.practicum.playlistmaker.search.data.network.ITunesApi
 import com.practicum.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.practicum.playlistmaker.sharing.data.impl.ExternalNavigatorImpl
 import com.practicum.playlistmaker.sharing.domain.ExternalNavigator
+import com.practicum.playlistmaker.utils.QUALIFIER_IMAGE_DIRECTORY
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -45,11 +48,15 @@ val dataModule = module {
             .build()
     }
 
-    single(named("imageDirectory")) {
+    single(named(QUALIFIER_IMAGE_DIRECTORY)) {
         File(
             androidContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
             "playlistImage"
         ).apply { if (!exists()) mkdirs() }
+    }
+
+    single<ExternalNavigatorMedia> {
+        ExternalNavigatorMediaImpl(androidContext())
     }
 
     factory { Gson() }

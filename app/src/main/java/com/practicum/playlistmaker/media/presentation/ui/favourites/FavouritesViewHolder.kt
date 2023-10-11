@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.presentation.ui
+package com.practicum.playlistmaker.media.presentation.ui.favourites
 
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -25,7 +25,7 @@ class FavouritesViewHolder(parentView: ViewGroup) : RecyclerView.ViewHolder(
         trackInfoView.text = itemView.context.getString(
             R.string.track_info,
             model.artistName,
-            model.trackTime
+            model.getTrackTime()
         )
         Glide.with(itemView)
             .load(model.artworkUrl100)

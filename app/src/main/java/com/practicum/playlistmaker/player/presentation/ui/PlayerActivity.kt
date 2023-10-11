@@ -16,7 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivityPlayerBinding
-import com.practicum.playlistmaker.media.presentation.ui.PlaylistFragment
+import com.practicum.playlistmaker.media.presentation.ui.playlist.PlaylistFragment
 import com.practicum.playlistmaker.player.presentation.mapper.ParcelableTrackMapper
 import com.practicum.playlistmaker.player.presentation.models.ParcelableTrack
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenMode
@@ -188,7 +188,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun init(track : Track) {
         binding.playerTrackName.text = track.trackName.orEmpty()
         binding.playerArtistName.text = track.artistName.orEmpty()
-        binding.playerTrackTimeInfo.text = track.trackTime.orEmpty()
+        binding.playerTrackTimeInfo.text = track.getTrackTime()
         binding.playerAlbumInfo.text = track.albumName.orEmpty()
         binding.playerCountryInfo.text = track.country.orEmpty()
         binding.playerTrackYearInfo.text = track.releaseYear.toString()
@@ -244,7 +244,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+    private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     companion object {
         const val TRACK = "Track"

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker.media.presentation.ui
+package com.practicum.playlistmaker.media.presentation.ui.playlists
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.media.presentation.models.PlaylistsScreenState
+import com.practicum.playlistmaker.media.presentation.ui.MediaFragmentDirections
 import com.practicum.playlistmaker.media.presentation.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -19,7 +20,11 @@ class PlaylistsFragment: Fragment() {
 
     private val playlistsViewModel: PlaylistsViewModel by viewModel()
 
-    private val playlistsAdapter = PlaylistsAdapter(ArrayList())
+    private val playlistsAdapter = PlaylistsAdapter(ArrayList()).apply {
+        clickListener = PlaylistsAdapter.PlaylistClickListener { playlist ->
+            playlistsViewModel.showPlaylistDetails(playlist.id)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +43,12 @@ class PlaylistsFragment: Fragment() {
         binding.playlistsGridView.rvPlaylistGrid.layoutManager = GridLayoutManager(requireContext(), 2)
         binding.playlistsGridView.rvPlaylistGrid.adapter = playlistsAdapter
 
-        playlistsViewModel.observeState().observe(viewLifecycleOwner) {
-            render(it)
+        playlistsViewModel.observeState().observe(viewLifecycleOwner) { state ->
+            render(state)
+        }
+
+        playlistsViewModel.getShowPlaylistDetailsTrigger().observe(viewLifecycleOwner) {playlistId ->
+            showPlaylistDetails(playlistId)
         }
 
         binding.playlistsEmpty.btNewPlaylist.setOnClickListener {
@@ -60,6 +69,13 @@ class PlaylistsFragment: Fragment() {
             is PlaylistsScreenState.Loading, PlaylistsScreenState.Empty -> Unit
             is PlaylistsScreenState.Content -> playlistsAdapter.addItems(state.playlists)
         }
+    }
+
+    private fun showPlaylistDetails(playlistId: Long) {
+        val action = MediaFragmentDirections.actionMediaFragmentToPlaylistDetailsFragment(
+            playlistId
+        )
+        findNavController().navigate(action)
     }
 
     companion object {

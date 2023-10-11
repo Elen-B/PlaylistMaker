@@ -20,7 +20,7 @@ import java.io.FileOutputStream
 import java.io.InputStream
 import kotlin.random.Random
 
-class PlaylistViewModel(
+open class PlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,
     private val localStorageInteractor: LocalStorageInteractor
 ) : ViewModel() {
@@ -71,7 +71,7 @@ class PlaylistViewModel(
     fun addPlaylist(aPlaylist: Playlist) {
         viewModelScope.launch {
             try {
-                val  res = playlistInteractor.addPlaylist(playlist = aPlaylist)
+                val res = playlistInteractor.addPlaylist(playlist = aPlaylist)
                 playlist.id = res
                 setResult(PlaylistScreenResult.Created(playlist))
             } catch (e: Exception) {
@@ -87,7 +87,7 @@ class PlaylistViewModel(
         }
     }
 
-    fun needShowDialog(): Boolean {
+    open fun needShowDialog(): Boolean {
         return stateLiveData.value is PlaylistScreenState.Filled || stateLiveData.value is PlaylistScreenState.NotEmpty
     }
 
@@ -137,6 +137,15 @@ class PlaylistViewModel(
             onPlaylistClickDebounce(true)
         }
         return current
+    }
+
+    protected fun setPlaylistValue(value: Playlist) {
+        playlist.id = value.id
+        playlist.name = value.name
+        playlist.description = value.description
+        playlist.filePath = value.filePath
+        playlist.trackList = value.trackList
+        playlist.trackCount = value.trackCount
     }
 
     companion object {
