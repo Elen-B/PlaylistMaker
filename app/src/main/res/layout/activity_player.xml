@@ -218,7 +218,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/playlists_bottom_sheet"
@@ -228,7 +228,8 @@
         android:orientation="horizontal"
         app:behavior_hideable="true"
         app:behavior_peekHeight="400dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        android:visibility="gone">
 
         <include
             layout="@layout/playlist_list_view"

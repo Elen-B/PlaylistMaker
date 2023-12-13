@@ -54,10 +54,12 @@ class PlaylistDetailsFragment: Fragment() {
         }
     }
 
-    private val backPressedOnMenuCallback = object: OnBackPressedCallback(false) {
+    private val backPressedOnMenuCallback = object: OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (bottomSheetMenuBehavior.state!= BottomSheetBehavior.STATE_HIDDEN) {
                 bottomSheetMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                findNavController().navigateUp()
             }
         }
     }
@@ -133,7 +135,7 @@ class PlaylistDetailsFragment: Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        backPressedOnMenuCallback.isEnabled = false
+                 //       backPressedOnMenuCallback.isEnabled = false
                         binding.playlistOverlay.visibility = View.GONE
                     }
                     else -> {
@@ -235,7 +237,7 @@ class PlaylistDetailsFragment: Fragment() {
     }
 
     private fun showBottomMenu(isVisible: Boolean) {
-        backPressedOnMenuCallback.isEnabled = isVisible
+   //     backPressedOnMenuCallback.isEnabled = isVisible
         if (isVisible) {
             bottomSheetMenuBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         } else {

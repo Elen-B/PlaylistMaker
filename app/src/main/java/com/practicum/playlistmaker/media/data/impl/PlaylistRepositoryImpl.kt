@@ -94,7 +94,8 @@ class PlaylistRepositoryImpl(
             listOf()
         else {
             val allPlaylistTracks = getPlaylistTracks()
-            allPlaylistTracks.filter { trackIdList.indexOf(it.trackId) > -1 }
+            val playlistTracks = allPlaylistTracks.filter { trackIdList.indexOf(it.trackId) > -1 }.associateBy { it.trackId }
+            trackIdList.mapNotNull { playlistTracks[it] }
         }
     }
 
