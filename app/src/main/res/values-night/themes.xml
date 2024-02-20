@@ -18,5 +18,6 @@
 
         <item name="colorOnSurface">@color/white</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.App.MaterialAlertDialog</item>
+        <item name="playbackButtonStyle">@style/DefaultPlaybackButtonStyle</item>
     </style>
 </resources>

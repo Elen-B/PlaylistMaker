@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PlaybackButtonView">
+        <attr name="playImageResId"
+            format="reference" />
+        <attr name="pauseImageResId"
+            format="reference" />
+        <attr name="fillColor"
+            format="color" />
+    </declare-styleable>
+
+    <!-- Добавили атрибут для стиля -->
+    <attr name="playbackButtonStyle"
+        format="reference" />
+
+    <style name="DefaultPlaybackButtonStyle">
+        <item name="fillColor">?attr/colorOnPrimary</item>
+    </style>
+</resources>

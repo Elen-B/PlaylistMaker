@@ -217,23 +217,23 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
     private fun onGetDefaultState() {
-        binding.playerPlayTrack.imageAlpha = GREY_IMAGE_ALPHA_CHANNEL
+        binding.playerPlayTrack.alpha = GREY_IMAGE_ALPHA_CHANNEL
         binding.playerPlayTrack.isEnabled = false
     }
     private fun onGetPreparedState() {
-        binding.playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-        binding.playerPlayTrack.imageAlpha = WHITE_IMAGE_ALPHA_CHANNEL
+        binding.playerPlayTrack.setPlaying(false)
+        binding.playerPlayTrack.alpha = WHITE_IMAGE_ALPHA_CHANNEL
         binding.playerPlayTrack.isEnabled = true
     }
     private fun onGetPlayingState() {
-        binding.playerPlayTrack.setImageResource(R.drawable.ic_pause_track)
+
     }
     private fun onGetProgressState(time: String?) {
         setTime(time)
     }
     private fun onGetPausedState(time: String?) {
         setTime(time)
-        binding.playerPlayTrack.setImageResource(R.drawable.ic_play_track)
+        binding.playerPlayTrack.setPlaying(false)
     }
 
     private fun renderFavourite(isFavourite: Boolean) {
@@ -249,8 +249,8 @@ class PlayerActivity : AppCompatActivity() {
     companion object {
         const val TRACK = "Track"
         const val FRAGMENT_TAG = "player"
-        private const val GREY_IMAGE_ALPHA_CHANNEL = 75
-        private const val WHITE_IMAGE_ALPHA_CHANNEL = 255
+        private const val GREY_IMAGE_ALPHA_CHANNEL = 75 / 255.0f
+        private const val WHITE_IMAGE_ALPHA_CHANNEL = 255 / 255.0f
 
         fun createArgs(track: Track): Bundle =
             bundleOf(TRACK to ParcelableTrackMapper.map(track))
