@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.utils
 
+const val LOG_TAG = "playlistmaker"
+
 //Константы для Koin
 const val QUALIFIER_IMAGE_DIRECTORY = "imageDirectory"
 

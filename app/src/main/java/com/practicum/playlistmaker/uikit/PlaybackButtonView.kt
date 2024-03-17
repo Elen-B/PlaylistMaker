@@ -9,12 +9,14 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
 import androidx.core.graphics.drawable.toBitmap
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.utils.LOG_TAG
 
 class PlaybackButtonView @JvmOverloads constructor(
     context: Context,
@@ -29,7 +31,7 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     private val playImageBitmap: Bitmap?
     private val pauseImageBitmap: Bitmap?
-    private var imageRect = RectF(0f, 0f, 0f, 0f)
+    private lateinit var imageRect: RectF
 
     private val paint = Paint().apply {
         colorFilter = PorterDuffColorFilter(Color.BLUE, PorterDuff.Mode.SRC_ATOP)
@@ -61,7 +63,7 @@ class PlaybackButtonView @JvmOverloads constructor(
             MeasureSpec.EXACTLY -> widthSize
             MeasureSpec.AT_MOST -> widthSize
 
-            else -> error("Неизвестный режим ширины ($widthMode)")
+            else -> Log.e(LOG_TAG, "Unknown widthMode $widthMode")
         }
 
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
@@ -70,7 +72,7 @@ class PlaybackButtonView @JvmOverloads constructor(
             MeasureSpec.EXACTLY -> heightSize
             MeasureSpec.AT_MOST -> heightSize
 
-            else -> error("Неизвестный режим высоты ($heightMode)")
+            else -> Log.e(LOG_TAG, "Unknown heightMode $heightMode")
         }
 
         val size = Integer.min(contentWidth, contentHeight)
