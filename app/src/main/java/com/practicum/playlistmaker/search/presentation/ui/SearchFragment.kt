@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.search.presentation.ui
 
 import android.app.Activity
+import android.content.IntentFilter
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -20,6 +22,7 @@ import com.practicum.playlistmaker.search.presentation.models.SearchScreenState
 import com.practicum.playlistmaker.search.presentation.view_model.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.utils.ConnectivityChangeReceiver
 
 class SearchFragment: Fragment() {
     private lateinit var binding: FragmentSearchBinding
@@ -41,6 +44,8 @@ class SearchFragment: Fragment() {
             viewModel.showPlayer(it)
         }
     }
+
+    private val connectivityChangeReceiver = ConnectivityChangeReceiver()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -121,6 +126,21 @@ class SearchFragment: Fragment() {
         super.onViewStateRestored(savedInstanceState)
         binding.edSearch.setText(savedInstanceState?.getString(SEARCH_TEXT))
         binding.edSearch.setSelection(binding.edSearch.text.length)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            requireContext(),
+            connectivityChangeReceiver,
+            IntentFilter(ConnectivityChangeReceiver.ACTION_CONNECTIVITY_CHANGE),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireContext().unregisterReceiver(connectivityChangeReceiver)
     }
 
     private fun showPlayerActivity(track: Track) {

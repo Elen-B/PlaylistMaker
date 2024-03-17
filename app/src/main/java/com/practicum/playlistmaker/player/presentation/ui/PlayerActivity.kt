@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.presentation.ui
 
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -8,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,7 @@ import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
 import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.utils.ConnectivityChangeReceiver
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -48,6 +51,8 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
     }
+
+    private val connectivityChangeReceiver = ConnectivityChangeReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,11 +140,22 @@ class PlayerActivity : AppCompatActivity() {
 
             viewModel.onNewPlaylistClick()
         }
-}
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            this,
+            connectivityChangeReceiver,
+            IntentFilter(ConnectivityChangeReceiver.ACTION_CONNECTIVITY_CHANGE),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
 
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
+        unregisterReceiver(connectivityChangeReceiver)
     }
 
     private fun getCurrentTrack(): Track {
