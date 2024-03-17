@@ -40,4 +40,5 @@
     <dimen name="thin_line">1dp</dimen>
     <dimen name="playlist_toolbar_button_size">24dp</dimen>
     <dimen name="playlist_create_button_size">44dp</dimen>
+    <dimen name="playback_button_min_size">84dp</dimen>
 </resources>

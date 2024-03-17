@@ -72,13 +72,13 @@
                 app:layout_constraintTop_toBottomOf="@id/playerTrackName"
                 tools:text="The Beatles" />
 
-            <ImageButton
+            <com.practicum.playlistmaker.uikit.PlaybackButtonView
                 android:id="@+id/playerPlayTrack"
-                style="@style/PlayerImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/xlarge_margin"
-                android:background="@drawable/bg_round_black_button"
-                android:contentDescription="@string/player_description_play"
-                android:src="@drawable/ic_play_track"
+                app:playImageResId="@drawable/ic_play_track"
+                app:pauseImageResId="@drawable/ic_pause_track"
                 app:layout_constraintEnd_toStartOf="@id/playerRightGuideLine24"
                 app:layout_constraintStart_toEndOf="@id/playerLeftGuideLine24"
                 app:layout_constraintTop_toBottomOf="@id/playerArtistName" />

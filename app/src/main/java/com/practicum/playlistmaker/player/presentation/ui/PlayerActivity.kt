@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.presentation.ui
 
+import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -8,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +26,7 @@ import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
 import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
+import com.practicum.playlistmaker.utils.ConnectivityChangeReceiver
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -48,6 +51,8 @@ class PlayerActivity : AppCompatActivity() {
             }
         }
     }
+
+    private val connectivityChangeReceiver = ConnectivityChangeReceiver()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,11 +140,22 @@ class PlayerActivity : AppCompatActivity() {
 
             viewModel.onNewPlaylistClick()
         }
-}
+    }
+
+    override fun onResume() {
+        super.onResume()
+        ContextCompat.registerReceiver(
+            this,
+            connectivityChangeReceiver,
+            IntentFilter(ConnectivityChangeReceiver.ACTION_CONNECTIVITY_CHANGE),
+            ContextCompat.RECEIVER_NOT_EXPORTED
+        )
+    }
 
     override fun onPause() {
         super.onPause()
         viewModel.pausePlayer()
+        unregisterReceiver(connectivityChangeReceiver)
     }
 
     private fun getCurrentTrack(): Track {
@@ -217,23 +233,23 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
     private fun onGetDefaultState() {
-        binding.playerPlayTrack.imageAlpha = GREY_IMAGE_ALPHA_CHANNEL
+        binding.playerPlayTrack.alpha = GREY_IMAGE_ALPHA_CHANNEL
         binding.playerPlayTrack.isEnabled = false
     }
     private fun onGetPreparedState() {
-        binding.playerPlayTrack.setImageResource(R.drawable.ic_play_track)
-        binding.playerPlayTrack.imageAlpha = WHITE_IMAGE_ALPHA_CHANNEL
+        binding.playerPlayTrack.setPlaying(false)
+        binding.playerPlayTrack.alpha = WHITE_IMAGE_ALPHA_CHANNEL
         binding.playerPlayTrack.isEnabled = true
     }
     private fun onGetPlayingState() {
-        binding.playerPlayTrack.setImageResource(R.drawable.ic_pause_track)
+
     }
     private fun onGetProgressState(time: String?) {
         setTime(time)
     }
     private fun onGetPausedState(time: String?) {
         setTime(time)
-        binding.playerPlayTrack.setImageResource(R.drawable.ic_play_track)
+        binding.playerPlayTrack.setPlaying(false)
     }
 
     private fun renderFavourite(isFavourite: Boolean) {
@@ -249,8 +265,8 @@ class PlayerActivity : AppCompatActivity() {
     companion object {
         const val TRACK = "Track"
         const val FRAGMENT_TAG = "player"
-        private const val GREY_IMAGE_ALPHA_CHANNEL = 75
-        private const val WHITE_IMAGE_ALPHA_CHANNEL = 255
+        private const val GREY_IMAGE_ALPHA_CHANNEL = 75 / 255.0f
+        private const val WHITE_IMAGE_ALPHA_CHANNEL = 255 / 255.0f
 
         fun createArgs(track: Track): Bundle =
             bundleOf(TRACK to ParcelableTrackMapper.map(track))
