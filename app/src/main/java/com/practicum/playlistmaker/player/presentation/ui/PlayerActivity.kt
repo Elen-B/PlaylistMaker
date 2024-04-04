@@ -1,9 +1,15 @@
 package com.practicum.playlistmaker.player.presentation.ui
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
+import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -25,6 +31,9 @@ import com.practicum.playlistmaker.player.presentation.models.PlayerScreenMode
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
 import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
+import com.practicum.playlistmaker.player.service.MusicService
+import com.practicum.playlistmaker.player.service.MusicService.Companion.SONG_DESCRIPTION_TAG
+import com.practicum.playlistmaker.player.service.MusicService.Companion.SONG_URL_TAG
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.ConnectivityChangeReceiver
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -53,6 +62,19 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private val connectivityChangeReceiver = ConnectivityChangeReceiver()
+
+    private var musicService: MusicService? = null
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder) {
+            val binder = service as MusicService.MusicServiceBinder
+            musicService = binder.getService()
+            Log.i("playlistMaker", "service connected")
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +117,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         init(track)
+        bindMusicService(track.previewUrl, String.format("%s - %s", track.artistName, track.trackName) )
 
         binding.btPlayerBack.setOnClickListener {
             finish()
@@ -156,6 +179,11 @@ class PlayerActivity : AppCompatActivity() {
         super.onPause()
         viewModel.pausePlayer()
         unregisterReceiver(connectivityChangeReceiver)
+    }
+
+    override fun onDestroy() {
+        unbindMusicService()
+        super.onDestroy()
     }
 
     private fun getCurrentTrack(): Track {
@@ -261,6 +289,19 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+    private fun bindMusicService(previewUrl: String?, description: String?) {
+        val intent = Intent(this, MusicService::class.java).apply {
+            putExtra(SONG_URL_TAG, previewUrl.orEmpty())
+            putExtra(SONG_DESCRIPTION_TAG, description.orEmpty())
+        }
+
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindMusicService() {
+        unbindService(serviceConnection)
+    }
 
     companion object {
         const val TRACK = "Track"
