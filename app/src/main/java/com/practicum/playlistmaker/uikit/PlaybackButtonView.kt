@@ -102,8 +102,10 @@ class PlaybackButtonView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_UP -> {
-                setPlaying(!playing)
-                performClick()
+                if (isEnabled) {
+                    setPlaying(!playing)
+                    performClick()
+                }
                 return true
             }
         }

@@ -28,12 +28,12 @@ import com.practicum.playlistmaker.media.presentation.ui.playlist.PlaylistFragme
 import com.practicum.playlistmaker.player.presentation.mapper.ParcelableTrackMapper
 import com.practicum.playlistmaker.player.presentation.models.ParcelableTrack
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenMode
-import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
 import com.practicum.playlistmaker.player.presentation.view_model.PlayerViewModel
 import com.practicum.playlistmaker.player.service.MusicService
 import com.practicum.playlistmaker.player.service.MusicService.Companion.SONG_DESCRIPTION_TAG
 import com.practicum.playlistmaker.player.service.MusicService.Companion.SONG_URL_TAG
+import com.practicum.playlistmaker.player.service.PlayerState
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.ConnectivityChangeReceiver
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -63,16 +63,16 @@ class PlayerActivity : AppCompatActivity() {
 
     private val connectivityChangeReceiver = ConnectivityChangeReceiver()
 
-    private var musicService: MusicService? = null
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder) {
+            Log.i("playlistMaker", "srtating onServiceConnected")
             val binder = service as MusicService.MusicServiceBinder
-            musicService = binder.getService()
+            viewModel.setAudioPlayerControl(binder.getService())
             Log.i("playlistMaker", "service connected")
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            musicService = null
+            viewModel.removeAudioPlayerControl()
         }
     }
 
@@ -99,6 +99,9 @@ class PlayerActivity : AppCompatActivity() {
        onBackPressedDispatcher.addCallback(backPressedCallback)
 
         track = getCurrentTrack()
+        bindMusicService(track.previewUrl, String.format("%s - %s", track.artistName, track.trackName) )
+
+        Log.e("playlistMaker", "starting observeState")
 
         viewModel.observeState().observe(this) {
             render(it)
@@ -117,7 +120,6 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         init(track)
-        bindMusicService(track.previewUrl, String.format("%s - %s", track.artistName, track.trackName) )
 
         binding.btPlayerBack.setOnClickListener {
             finish()
@@ -176,9 +178,8 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        super.onPause()
-        viewModel.pausePlayer()
         unregisterReceiver(connectivityChangeReceiver)
+        super.onPause()
     }
 
     override fun onDestroy() {
@@ -195,14 +196,11 @@ class PlayerActivity : AppCompatActivity() {
         return ParcelableTrackMapper.map(track ?: ParcelableTrack())
     }
 
-    private fun render(state: PlayerScreenState) {
-        when (state) {
-            is PlayerScreenState.Default -> onGetDefaultState()
-            is PlayerScreenState.Prepared -> onGetPreparedState()
-            is PlayerScreenState.Playing -> onGetPlayingState()
-            is PlayerScreenState.Progress -> onGetProgressState(state.time)
-            is PlayerScreenState.Paused -> onGetPausedState(state.time)
-        }
+    private fun render(state: PlayerState) {
+        setTime(state.progress)
+        binding.playerPlayTrack.isEnabled = state.buttonEnabled
+        binding.playerPlayTrack.alpha =
+            if (binding.playerPlayTrack.isEnabled) WHITE_IMAGE_ALPHA_CHANNEL else GREY_IMAGE_ALPHA_CHANNEL
     }
 
     private fun renderMode(mode: PlayerScreenMode) {
@@ -260,25 +258,6 @@ class PlayerActivity : AppCompatActivity() {
             binding.playerTrackTimeProgress.text = time
         }
     }
-    private fun onGetDefaultState() {
-        binding.playerPlayTrack.alpha = GREY_IMAGE_ALPHA_CHANNEL
-        binding.playerPlayTrack.isEnabled = false
-    }
-    private fun onGetPreparedState() {
-        binding.playerPlayTrack.setPlaying(false)
-        binding.playerPlayTrack.alpha = WHITE_IMAGE_ALPHA_CHANNEL
-        binding.playerPlayTrack.isEnabled = true
-    }
-    private fun onGetPlayingState() {
-
-    }
-    private fun onGetProgressState(time: String?) {
-        setTime(time)
-    }
-    private fun onGetPausedState(time: String?) {
-        setTime(time)
-        binding.playerPlayTrack.setPlaying(false)
-    }
 
     private fun renderFavourite(isFavourite: Boolean) {
         if (isFavourite) {
@@ -291,6 +270,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     private fun bindMusicService(previewUrl: String?, description: String?) {
+        Log.e("playlistMaker", "bindMusicService")
         val intent = Intent(this, MusicService::class.java).apply {
             putExtra(SONG_URL_TAG, previewUrl.orEmpty())
             putExtra(SONG_DESCRIPTION_TAG, description.orEmpty())
