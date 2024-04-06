@@ -146,6 +146,16 @@ class PlayerViewModel(
         }
     }
 
+    fun showNotification() {
+        if (stateLiveData.value is PlayerState.Playing) {
+            audioPlayerControl?.showNotification()
+        }
+    }
+
+    fun hideNotification() {
+        audioPlayerControl?.hideNotification()
+    }
+
     override fun onCleared() {
         super.onCleared()
         audioPlayerControl = null

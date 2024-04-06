@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.player.presentation.ui
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -14,6 +15,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
@@ -76,6 +78,16 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            bindMusicService(track.previewUrl, String.format("%s - %s", track.artistName, track.trackName) )
+        } else {
+            Toast.makeText(this, resources.getString(R.string.player_service_error), Toast.LENGTH_LONG).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -99,8 +111,11 @@ class PlayerActivity : AppCompatActivity() {
        onBackPressedDispatcher.addCallback(backPressedCallback)
 
         track = getCurrentTrack()
-        bindMusicService(track.previewUrl, String.format("%s - %s", track.artistName, track.trackName) )
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            bindMusicService(track.previewUrl, String.format("%s - %s", track.artistName, track.trackName) )
+        }
         Log.e("playlistMaker", "starting observeState")
 
         viewModel.observeState().observe(this) {
@@ -175,10 +190,12 @@ class PlayerActivity : AppCompatActivity() {
             IntentFilter(ConnectivityChangeReceiver.ACTION_CONNECTIVITY_CHANGE),
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
+        viewModel.hideNotification()
     }
 
     override fun onPause() {
         unregisterReceiver(connectivityChangeReceiver)
+        viewModel.showNotification()
         super.onPause()
     }
 
