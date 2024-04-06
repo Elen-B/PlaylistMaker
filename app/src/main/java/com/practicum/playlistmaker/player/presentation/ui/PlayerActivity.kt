@@ -10,7 +10,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -67,10 +66,8 @@ class PlayerActivity : AppCompatActivity() {
 
     private val serviceConnection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder) {
-            Log.i("playlistMaker", "srtating onServiceConnected")
             val binder = service as MusicService.MusicServiceBinder
             viewModel.setAudioPlayerControl(binder.getService())
-            Log.i("playlistMaker", "service connected")
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -116,7 +113,6 @@ class PlayerActivity : AppCompatActivity() {
         } else {
             bindMusicService(track.previewUrl, String.format("%s - %s", track.artistName, track.trackName) )
         }
-        Log.e("playlistMaker", "starting observeState")
 
         viewModel.observeState().observe(this) {
             render(it)
@@ -291,7 +287,6 @@ class PlayerActivity : AppCompatActivity() {
     private fun showMessage(message: String) = Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
     private fun bindMusicService(previewUrl: String?, description: String?) {
-        Log.e("playlistMaker", "bindMusicService")
         val intent = Intent(this, MusicService::class.java).apply {
             putExtra(SONG_URL_TAG, previewUrl.orEmpty())
             putExtra(SONG_DESCRIPTION_TAG, description.orEmpty())

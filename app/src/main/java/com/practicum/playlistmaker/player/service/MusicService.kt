@@ -10,7 +10,6 @@ import android.content.pm.ServiceInfo
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.ServiceCompat
 import com.practicum.playlistmaker.R
@@ -49,7 +48,6 @@ internal class MusicService : Service(), AudioPlayerControl {
         songUrl = intent?.getStringExtra(SONG_URL_TAG) ?: ""
         songDescription = intent?.getStringExtra(SONG_DESCRIPTION_TAG) ?: ""
         initMediaPlayer()
-        Log.i("playlistMaker", "onBind")
 
         createNotificationChannel()
         return binder
@@ -121,7 +119,6 @@ internal class MusicService : Service(), AudioPlayerControl {
     }
 
     private fun setState(playerState: PlayerState) {
-        Log.e("playlistMaker22", playerState.toString())
         _playerState.value = playerState
     }
 
@@ -144,7 +141,8 @@ internal class MusicService : Service(), AudioPlayerControl {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(resources.getString(R.string.app_name))
             .setContentText(songDescription)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_music_service)
+            .setColor(getColor(R.color.blue))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .build()
