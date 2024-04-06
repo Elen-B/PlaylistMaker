@@ -31,7 +31,7 @@ internal class MusicService : Service(), AudioPlayerControl {
         timerJob = CoroutineScope(Dispatchers.Default).launch {
             while (_playerState.value is PlayerState.Playing /*mediaPlayer?.isPlaying == true*/) {
                 delay(TIME_DEBOUNCE_DELAY_MILLIS)
-                _playerState.value = PlayerState.Playing(getCurrentPlayerPosition())
+                setState(PlayerState.Playing(getCurrentPlayerPosition()))
             }
         }
     }
@@ -58,13 +58,13 @@ internal class MusicService : Service(), AudioPlayerControl {
     }
 
     private fun startPlayer() {
-        _playerState.value = PlayerState.Playing(getCurrentPlayerPosition())
+        setState(PlayerState.Playing(getCurrentPlayerPosition()))
         startTimer()
     }
 
     private fun pausePlayer() {
         timerJob?.cancel()
-        _playerState.value = PlayerState.Paused(getCurrentPlayerPosition())
+        setState(PlayerState.Paused(getCurrentPlayerPosition()))
     }
 
     override fun playbackControl() {
@@ -78,6 +78,7 @@ internal class MusicService : Service(), AudioPlayerControl {
         playerInteractor.preparePlayer(songUrl, {
             setState(PlayerState.Prepared())
         }, {
+            timerJob?.cancel()
             setState(PlayerState.Prepared())
         }, {
 
@@ -86,7 +87,7 @@ internal class MusicService : Service(), AudioPlayerControl {
 
     private fun releasePlayer() {
         timerJob?.cancel()
-        _playerState.value = PlayerState.Default()
+        setState(PlayerState.Default())
         playerInteractor.release()
     }
 
@@ -95,6 +96,7 @@ internal class MusicService : Service(), AudioPlayerControl {
     }
 
     private fun setState(playerState: PlayerState) {
+        Log.e("playlistMaker22", playerState.toString())
         _playerState.value = playerState
     }
 

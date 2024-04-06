@@ -199,8 +199,12 @@ class PlayerActivity : AppCompatActivity() {
     private fun render(state: PlayerState) {
         setTime(state.progress)
         binding.playerPlayTrack.isEnabled = state.buttonEnabled
+
         binding.playerPlayTrack.alpha =
             if (binding.playerPlayTrack.isEnabled) WHITE_IMAGE_ALPHA_CHANNEL else GREY_IMAGE_ALPHA_CHANNEL
+        if (state is PlayerState.Prepared) {
+            binding.playerPlayTrack.setPlaying(false)
+        }
     }
 
     private fun renderMode(mode: PlayerScreenMode) {

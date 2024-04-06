@@ -64,14 +64,7 @@ class PlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerReposit
     }
 
     override fun getCurrentPosition(default: String?): String? {
-        return when (playerState) {
-            PlayerState.PLAYING -> SimpleDateFormat("mm:ss", Locale.getDefault()).format(
-                mediaPlayerRepository.getCurrentPosition()
-            )
-
-            PlayerState.PREPARED, PlayerState.DEFAULT -> default
-            else -> null
-        }
+        return SimpleDateFormat("mm:ss", Locale.getDefault()).format(mediaPlayerRepository.getCurrentPosition()) ?: default
     }
 
     override fun release() {
