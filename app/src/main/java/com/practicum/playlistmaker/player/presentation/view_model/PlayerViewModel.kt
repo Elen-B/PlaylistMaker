@@ -7,20 +7,17 @@ import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.media.domain.api.FavouritesInteractor
 import com.practicum.playlistmaker.media.domain.api.PlaylistInteractor
 import com.practicum.playlistmaker.media.domain.models.Playlist
-import com.practicum.playlistmaker.player.domain.api.PlayerInteractor
 import com.practicum.playlistmaker.player.presentation.models.PlayerScreenMode
-import com.practicum.playlistmaker.player.presentation.models.PlayerScreenState
 import com.practicum.playlistmaker.player.presentation.models.TrackAddProcessStatus
+import com.practicum.playlistmaker.player.service.AudioPlayerControl
+import com.practicum.playlistmaker.player.service.PlayerState
 import com.practicum.playlistmaker.search.domain.api.HistoryInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.SingleEventLiveData
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
     private val track: Track,
-    private val playerInteractor: PlayerInteractor,
     private val favouritesInteractor: FavouritesInteractor,
     private val historyInteractor: HistoryInteractor,
     private val playlistInteractor: PlaylistInteractor,
@@ -30,8 +27,8 @@ class PlayerViewModel(
     private val modeLiveData = MutableLiveData<PlayerScreenMode>()
     fun observeMode(): LiveData<PlayerScreenMode> = modeLiveData
 
-    private val stateLiveData = MutableLiveData<PlayerScreenState>()
-    fun observeState(): LiveData<PlayerScreenState> = stateLiveData
+    private val stateLiveData = MutableLiveData<PlayerState>()
+    fun observeState(): LiveData<PlayerState> = stateLiveData
 
     private val favouriteLiveData = MutableLiveData<Boolean>()
     fun observeFavourite(): LiveData<Boolean> = favouriteLiveData
@@ -39,12 +36,10 @@ class PlayerViewModel(
     private val trackAddProcessStatus = SingleEventLiveData<TrackAddProcessStatus>()
     fun getAddProcessStatus(): LiveData<TrackAddProcessStatus> = trackAddProcessStatus
 
-    private var currentTime: String? = null
-    private var timerJob: Job? = null
+    private var audioPlayerControl: AudioPlayerControl? = null
     private var playlists: List<Playlist> = listOf()
 
     init {
-        loadPlayer()
         viewModelScope.launch {
             track.isFavourite = favouritesInteractor.getFavouriteState(track.trackId ?: 0)
             setFavourite(track.isFavourite)
@@ -60,18 +55,21 @@ class PlayerViewModel(
         setMode(PlayerScreenMode.Player)
     }
 
-    private fun loadPlayer() {
-        setState(PlayerScreenState.Default(track))
-        playerInteractor.preparePlayer(track.previewUrl, {
-            setState(PlayerScreenState.Prepared)
-        }, {
-            setState(PlayerScreenState.Paused(DEFAULT_TIME))
-        }, {
+    fun setAudioPlayerControl(audioPlayerControl: AudioPlayerControl) {
+        this.audioPlayerControl = audioPlayerControl
 
-        })
+        viewModelScope.launch {
+            audioPlayerControl.getPlayerState().collect {
+                setState(it)
+            }
+        }
     }
 
-    private fun setState(state: PlayerScreenState) {
+    fun removeAudioPlayerControl() {
+        audioPlayerControl = null
+    }
+
+    private fun setState(state: PlayerState) {
         stateLiveData.value = state
     }
 
@@ -87,34 +85,8 @@ class PlayerViewModel(
         trackAddProcessStatus.value = status
     }
 
-    private fun startTimer() {
-        timerJob = viewModelScope.launch {
-            while (stateLiveData.value is PlayerScreenState.Playing || stateLiveData.value is PlayerScreenState.Progress) {
-                currentTime = getCurrentTime()
-                setState(PlayerScreenState.Progress(getCurrentTime()))
-                delay(TIME_DEBOUNCE_DELAY_MILLIS)
-            }
-        }
-    }
-
-    private fun onStartPlayer() {
-        setState(PlayerScreenState.Playing())
-        startTimer()
-    }
-
-    private fun onPausePlayer() {
-        setState(PlayerScreenState.Paused(currentTime))
-        timerJob?.cancel()
-    }
-
-    private fun getCurrentTime(): String? = playerInteractor.getCurrentPosition(DEFAULT_TIME)
-
     fun playBackControl() {
-        playerInteractor.playbackControl({ onStartPlayer() }, { onPausePlayer() })
-    }
-
-    fun pausePlayer() {
-        playerInteractor.pausePlayer { onPausePlayer() }
+        audioPlayerControl?.playbackControl()
     }
 
     private fun saveFavouriteTrack() {
@@ -174,13 +146,18 @@ class PlayerViewModel(
         }
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        playerInteractor.release()
+    fun showNotification() {
+        if (stateLiveData.value is PlayerState.Playing) {
+            audioPlayerControl?.showNotification()
+        }
     }
 
-    companion object {
-        private const val DEFAULT_TIME = "00:00"
-        private const val TIME_DEBOUNCE_DELAY_MILLIS = 300L
+    fun hideNotification() {
+        audioPlayerControl?.hideNotification()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        audioPlayerControl = null
     }
 }

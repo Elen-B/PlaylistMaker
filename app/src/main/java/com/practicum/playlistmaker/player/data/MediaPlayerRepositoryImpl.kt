@@ -19,6 +19,8 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer : MediaPlayer) : MediaPl
     }
 
     override fun release() {
+        mediaPlayer.setOnPreparedListener(null)
+        mediaPlayer.setOnCompletionListener(null)
         mediaPlayer.release()
     }
 
